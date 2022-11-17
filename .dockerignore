@@ -1,0 +1,5 @@
+# Ignore everything.
+**
+
+# Except the following.
+!/docker-entrypoint.sh

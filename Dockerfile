@@ -66,6 +66,6 @@ RUN addgroup --gid 1001 --system cdktf && \
 USER cdktf
 
 # Specify the container entrypoint and its default arguments.
-COPY ../nodlehs-trading/infra-cdktf/docker-entrypoint.sh /
+COPY docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["/bin/sh"]

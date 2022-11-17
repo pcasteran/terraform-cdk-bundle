@@ -7,7 +7,12 @@ A minimal bundle containing the tools required to use CDK for Terraform
 Build the image:
 
 ```bash
-DOCKER_BUILDKIT=1 docker build --build-arg 'BASE=python' --tag cdktf-bundle:0.13.3-python .
+CDKTF_VERSION="0.13.3"
+DOCKER_BUILDKIT=1 docker build \
+  --build-arg "BASE=python" \
+  --build-arg "CDKTF_VERSION=${CDKTF_VERSION}" \
+  --tag cdktf-bundle:0.13.3-python \
+  .
 ```
 
 Use it:
@@ -54,7 +59,12 @@ poetry update
 Build the image:
 
 ```bash
-DOCKER_BUILDKIT=1 docker build --build-arg 'BASE=go' --tag cdktf-bundle:0.13.3-go .
+CDKTF_VERSION="0.13.3"
+DOCKER_BUILDKIT=1 docker build \
+  --build-arg "BASE=go" \
+  --build-arg "CDKTF_VERSION=${CDKTF_VERSION}" \
+  --tag cdktf-bundle:0.13.3-python \
+  .
 ```
 
 Use it:
