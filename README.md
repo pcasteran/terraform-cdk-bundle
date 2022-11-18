@@ -11,7 +11,8 @@ CDKTF_VERSION="0.13.3"
 DOCKER_BUILDKIT=1 docker build \
   --build-arg "BASE=python" \
   --build-arg "CDKTF_VERSION=${CDKTF_VERSION}" \
-  --tag cdktf-bundle:0.13.3-python \
+  --tag cdktf-bundle:${CDKTF_VERSION}-python \
+  --tag cdktf-bundle:latest-python \
   .
 ```
 
@@ -24,7 +25,7 @@ alias cdktf_bundle='docker run --rm -it \
   --volume $(pwd):/workspace \
   --volume "${HOME}/.config/gcloud/application_default_credentials.json":/gcp/adc.json:ro \
   --env GOOGLE_APPLICATION_CREDENTIALS=/gcp/adc.json \
-  cdktf-bundle:0.13.3-python'
+  cdktf-bundle:latest-python'
 
 cdktf_bundle cdktf init --template=python --local --project-name=test --project-description=test --no-enable-crash-reporting
 
@@ -63,7 +64,8 @@ CDKTF_VERSION="0.13.3"
 DOCKER_BUILDKIT=1 docker build \
   --build-arg "BASE=go" \
   --build-arg "CDKTF_VERSION=${CDKTF_VERSION}" \
-  --tag cdktf-bundle:0.13.3-python \
+  --tag cdktf-bundle:${CDKTF_VERSION}-go \
+  --tag cdktf-bundle:latest-go \
   .
 ```
 
@@ -76,7 +78,7 @@ alias cdktf_bundle_go='docker run --rm -it \
   --volume $(pwd):/workspace \
   --volume "${HOME}/.config/gcloud/application_default_credentials.json":/gcp/adc.json:ro \
   --env GOOGLE_APPLICATION_CREDENTIALS=/gcp/adc.json \
-  cdktf-bundle:0.13.3-go'
+  cdktf-bundle:latest-go'
 
 cdktf_bundle_go cdktf init --template=go --local --project-name=test --project-description=test --no-enable-crash-reporting
 
