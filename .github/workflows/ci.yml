@@ -16,6 +16,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Dockerfile linting
+        uses: hadolint/hadolint-action@v3.0.0
+
   build_test_publish:
     runs-on: ubuntu-latest
     steps:
