@@ -1,15 +1,20 @@
-name: CI
+name: CI # TODO
 
 on:
   push:
     branches: # TODO: [ "main" ] or [ $default-branch ]
       - ci
 
-  # Allows running this workflow manually from the Actions tab.
-  # TODO TBC
-  workflow_dispatch:
-
 jobs:
+
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - uses: cloudposse/github-action-pre-commit@v3.0.0
 
   static_analysis:
     runs-on: ubuntu-latest
@@ -24,7 +29,9 @@ jobs:
         run: docker run --rm -i hadolint/hadolint < Dockerfile
 
   build_test_publish:
-    needs: static_analysis
+    needs:
+      - pre-commit
+      - static_analysis
     runs-on: ubuntu-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
