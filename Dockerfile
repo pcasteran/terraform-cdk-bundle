@@ -33,6 +33,7 @@ FROM golang:${GO_BASE_VERSION} AS go_base
 
 ##
 
+# hadolint ignore=DL3006
 FROM ${BASE}_base
 
 ARG NODE_VERSION
@@ -51,6 +52,7 @@ COPY --from=terraform /bin/terraform /bin/terraform
 ENV CHECKPOINT_DISABLE=1
 ENV DISABLE_VERSION_CHECK=1
 RUN npm install --global cdktf-cli@${CDKTF_VERSION}
+RUN "plouf"
 
 # Create the workspace directory.
 # Configure the HOME directory to be in the workspace directory for all users.
