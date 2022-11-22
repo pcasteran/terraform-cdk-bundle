@@ -51,7 +51,6 @@ jobs:
         with:
           platforms: |
             linux/amd64
-            linux/arm64
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2.2.1
@@ -65,7 +64,6 @@ jobs:
             CDKTF_VERSION=${{ env.CDKTF_VERSION }}
           platforms: |
             linux/amd64
-            linux/arm64
           tags: |
             ${{ env.IMAGE_NAME }}:${{ env.CDKTF_VERSION }}-${{ matrix.language }}
             ${{ env.IMAGE_NAME }}:latest-${{ matrix.language }}
