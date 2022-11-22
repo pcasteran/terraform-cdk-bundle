@@ -53,25 +53,25 @@ jobs:
         uses: docker/build-push-action@v3.2.0
         with:
           context: .
-          build-args:
-            - BASE=${{ matrix.language }}
-            - CDKTF_VERSION=${{ env.CDKTF_VERSION }}
-          platforms:
-            - linux/amd64
-            - linux/arm64
-          tags:
-            - ${{ env.IMAGE_NAME }}:${{ env.CDKTF_VERSION }}-${{ matrix.language }}
-            - ${{ env.IMAGE_NAME }}:latest-${{ matrix.language }}
+          build-args: |
+            BASE=${{ matrix.language }}
+            CDKTF_VERSION=${{ env.CDKTF_VERSION }}
+          platforms: |
+            linux/amd64
+            linux/arm64
+          tags: |
+            ${{ env.IMAGE_NAME }}:${{ env.CDKTF_VERSION }}-${{ matrix.language }}
+            ${{ env.IMAGE_NAME }}:latest-${{ matrix.language }}
           push: false
 
-#      - name: Build image
-#        run: |
-#          echo "Building image for language ${{ matrix.language }}"
-#          DOCKER_BUILDKIT=1 docker build \
-#            --build-arg "BASE=${{ matrix.language }}" \
-#            --build-arg "CDKTF_VERSION=${CDKTF_VERSION}" \
-#            --tag cdktf-bundle:${CDKTF_VERSION}-${{ matrix.language }} \
-#            --tag cdktf-bundle:latest-${{ matrix.language }} \
-#            .
+  #      - name: Build image
+  #        run: |
+  #          echo "Building image for language ${{ matrix.language }}"
+  #          DOCKER_BUILDKIT=1 docker build \
+  #            --build-arg "BASE=${{ matrix.language }}" \
+  #            --build-arg "CDKTF_VERSION=${CDKTF_VERSION}" \
+  #            --tag cdktf-bundle:${CDKTF_VERSION}-${{ matrix.language }} \
+  #            --tag cdktf-bundle:latest-${{ matrix.language }} \
+  #            .
 
   # TODO: action + propre (buildkit possible ?) ou carrément buildah
