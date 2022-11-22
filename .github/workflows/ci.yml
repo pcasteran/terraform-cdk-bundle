@@ -13,31 +13,31 @@ env:
 
 jobs:
 
-  pre-commit:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-      - uses: cloudposse/github-action-pre-commit@v3.0.0
-
-  static_analysis:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Dockerfile linting
-        # At the moment, the hadolint action is not usable as it does not display
-        # the errors in the logs in case of a failure.
-        # See: https://github.com/hadolint/hadolint-action/issues/60
-        # uses: hadolint/hadolint-action@v3.0.0
-        run: docker run --rm -i hadolint/hadolint:${HADOLINT_VERSION} < Dockerfile
+#  pre-commit:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v3
+#      - uses: actions/setup-python@v4
+#        with:
+#          python-version: "3.11"
+#      - uses: cloudposse/github-action-pre-commit@v3.0.0
+#
+#  static_analysis:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v3
+#
+#      - name: Dockerfile linting
+#        # At the moment, the hadolint action is not usable as it does not display
+#        # the errors in the logs in case of a failure.
+#        # See: https://github.com/hadolint/hadolint-action/issues/60
+#        # uses: hadolint/hadolint-action@v3.0.0
+#        run: docker run --rm -i hadolint/hadolint:${HADOLINT_VERSION} < Dockerfile
 
   build_test_publish:
-    needs:
-      - pre-commit
-      - static_analysis
+#    needs:
+#      - pre-commit
+#      - static_analysis
     runs-on: ubuntu-latest
     strategy:
       matrix:
