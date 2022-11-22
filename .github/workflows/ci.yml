@@ -7,6 +7,7 @@ on:
 
 env:
   IMAGE_NAME: "cdktf-bundle"
+  IMAGE_PLATFORMS: "linux/amd64,linux/arm64"
   CDKTF_VERSION: "0.13.3"
   HADOLINT_VERSION: "v2.12.0"
 
@@ -49,11 +50,16 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2.1.0
         with:
-          platforms: |
-            linux/amd64
+          platforms: ${{ env.IMAGE_PLATFORMS }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2.2.1
+
+      - name: Debug
+        run: |
+          docker buildx ls
+          docker run --rm alpine uname -a
+          docker run --rm arm64v8/alpine uname -a
 
       - name: Build image
         uses: docker/build-push-action@v3.2.0
@@ -62,8 +68,7 @@ jobs:
           build-args: |
             BASE=${{ matrix.language }}
             CDKTF_VERSION=${{ env.CDKTF_VERSION }}
-          platforms: |
-            linux/amd64
+          platforms: ${{ env.IMAGE_PLATFORMS }}
           tags: |
             ${{ env.IMAGE_NAME }}:${{ env.CDKTF_VERSION }}-${{ matrix.language }}
             ${{ env.IMAGE_NAME }}:latest-${{ matrix.language }}
