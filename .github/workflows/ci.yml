@@ -55,12 +55,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2.2.1
 
-      - name: Debug
-        run: |
-          docker buildx ls
-          docker run --rm alpine uname -a
-          docker run --rm arm64v8/alpine uname -a
-
       - name: Build image
         uses: docker/build-push-action@v3.2.0
         with:
@@ -73,10 +67,6 @@ jobs:
             ${{ env.IMAGE_NAME }}:${{ env.CDKTF_VERSION }}-${{ matrix.language }}
             ${{ env.IMAGE_NAME }}:latest-${{ matrix.language }}
           push: false
-
-      - name: Debug
-        run: |
-          docker images
 
   #      - name: Build image
   #        run: |
