@@ -73,7 +73,7 @@ jobs:
 
           # Use a temporary tag based on the commit SHA.
           tags: |
-            ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ env.GITHUB_SHA }}-${{ matrix.language }}
+            ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${GITHUB_SHA}-${{ matrix.language }}
 
           # The local registry does not support multi-platform images, so we can't use `load: true`.
           # See https://github.com/docker/buildx/issues/59
