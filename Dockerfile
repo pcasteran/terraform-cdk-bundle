@@ -11,10 +11,6 @@ ARG NPM_VERSION="8.10.0-r0"
 ARG TERRAFORM_VERSION="1.3.5"
 ARG CDKTF_VERSION="0.13.3"
 
-LABEL org.opencontainers.image.source="https://github.com/pcasteran/terraform-cdk-bundle"
-LABEL org.opencontainers.image.description="A minimal bundle containing the tools required to use CDK for Terraform"
-LABEL org.opencontainers.image.licenses="Apache-2.0"
-
 ##
 
 FROM hashicorp/terraform:${TERRAFORM_VERSION} AS terraform
@@ -43,6 +39,10 @@ FROM ${BASE}_base
 ARG NODE_VERSION
 ARG NPM_VERSION
 ARG CDKTF_VERSION
+
+LABEL org.opencontainers.image.source="https://github.com/pcasteran/terraform-cdk-bundle"
+LABEL org.opencontainers.image.description="A minimal bundle containing the tools required to use CDK for Terraform"
+LABEL org.opencontainers.image.licenses="Apache-2.0"
 
 # Install node and npm.
 RUN apk add --no-cache \
