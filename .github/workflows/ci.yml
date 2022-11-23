@@ -55,7 +55,14 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2.2.1
 
-      - name: Build image
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2.1.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
         uses: docker/build-push-action@v3.2.0
         with:
           context: .
@@ -63,10 +70,21 @@ jobs:
             BASE=${{ matrix.language }}
             CDKTF_VERSION=${{ env.CDKTF_VERSION }}
           platforms: ${{ env.IMAGE_PLATFORMS }}
+
+          # Use a temporary tag based on the commit SHA.
           tags: |
-            ${{ env.IMAGE_NAME }}:${{ env.CDKTF_VERSION }}-${{ matrix.language }}
-            ${{ env.IMAGE_NAME }}:latest-${{ matrix.language }}
-          push: false
+            ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ env.GITHUB_SHA }}-${{ matrix.language }}
+
+          # The local registry does not support multi-platform images, so we can't use `load: true`.
+          # See https://github.com/docker/buildx/issues/59
+          # Instead we use `push: true` to push the image to a remote registry.
+          push: true
+
+
+      # TODO retag
+      # https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#tagging-container-images
+      #            ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ env.CDKTF_VERSION }}-${{ matrix.language }}
+      #            ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest-${{ matrix.language }}
 
   #      - name: Build image
   #        run: |
