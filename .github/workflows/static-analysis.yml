@@ -1,0 +1,42 @@
+name: Static analysis
+
+on:
+  pull_request:
+    branches:
+      - "main"
+
+jobs:
+
+  pre-commit:
+    name: pre-commit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - uses: cloudposse/github-action-pre-commit@v3.0.0
+
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          # Full git history is needed to get a proper list of changed files within `super-linter`.
+          fetch-depth: 0
+
+      - name: Lint Code Base
+        uses: github/super-linter@v4.9.7
+        env:
+          VALIDATE_ALL_CODEBASE: true # TODO: set to false
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+# Dockerfile
+# GitHub Actions
+# Golang
+# Markdown
+# Python3
+# Shell
+# YAML

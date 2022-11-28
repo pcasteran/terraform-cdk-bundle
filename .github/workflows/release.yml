@@ -1,15 +1,15 @@
 name: Release
 
-on:
-  push:
-    branches:
-      - "main"
-      - "ci" # TODO: to remove
-    tags:
-      - "v[0-9]+.[0-9]+.[0-9]+*"
-  pull_request:
-    branches:
-      - "main"
+#on:
+#  push:
+#    branches:
+#      - "main"
+#      - "ci" # TODO: to remove
+#    tags:
+#      - "v[0-9]+.[0-9]+.[0-9]+*"
+#  pull_request:
+#    branches:
+#      - "main"
 
 env:
   IMAGE_NAME: "cdktf-bundle"
