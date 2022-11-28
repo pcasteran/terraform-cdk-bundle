@@ -17,6 +17,9 @@ env:
   CDKTF_VERSION: "0.13.3"
   HADOLINT_VERSION: "v2.12.0"
 
+permissions:
+  packages: write
+
 jobs:
 
 #  pre-commit:
@@ -80,7 +83,7 @@ jobs:
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-          # TODO: type=sha if retaging not possible ?
+            type=sha
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v3.2.0
@@ -90,17 +93,13 @@ jobs:
             BASE=${{ matrix.language }}
             CDKTF_VERSION=${{ env.CDKTF_VERSION }}
           platforms: ${{ env.IMAGE_PLATFORMS }}
-
-          # Use a temporary tag based on the commit SHA.
-          tags: |
-            ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}-${{ matrix.language }}
-
+          tags: ${{ steps.docker_metadata.outputs.tags }}
           labels: ${{ steps.docker_metadata.outputs.labels }}
 
           # The local registry does not support multi-platform images, so we can't use `load: true`.
           # See https://github.com/docker/buildx/issues/59
           # Instead we use `push: true` to push the image to a remote registry.
-          push: true
+          push: ${{ github.event_name != "pull_request" }}
 
 
       # TODO retag
