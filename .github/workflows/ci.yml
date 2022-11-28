@@ -2,8 +2,14 @@ name: CI # TODO
 
 on:
   push:
-    branches: # TODO: [ "main" ] or [ $default-branch ]
-      - "ci"
+    branches:
+      - ${{ github.event.repository.default_branch }}
+      - "ci" # TODO: to remove
+    tags:
+      - "v*.*.*"
+  pull_request:
+    branches:
+      - ${{ github.event.repository.default_branch }}
 
 env:
   IMAGE_NAME: "cdktf-bundle"
@@ -69,18 +75,12 @@ jobs:
           images: ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
           flavor: |
             suffix=-${{ matrix.language }}
-#          tags: |
-#            type=ref,event=branch # TODO: to remove ?
-#            type=semver,pattern={{version}}
-#            type=semver,pattern={{major}}.{{minor}}
-            # TODO: type=sha if retagging noty possible ?
-
-
-      - name: debug
-        run: |
-          echo "version: ${{ steps.docker_metadata.outputs.version }}"
-          echo "tags: ${{ steps.docker_metadata.outputs.tags }}"
-          echo "labels: ${{ steps.docker_metadata.outputs.labels }}"
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+          # TODO: type=sha if retaging not possible ?
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v3.2.0
