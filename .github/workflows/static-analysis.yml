@@ -36,11 +36,11 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ERROR_ON_MISSING_EXEC_BIT: true
           LINTER_RULES_PATH: /
           # Declare the linters to use.
           VALIDATE_BASH: true
           VALIDATE_BASH_EXEC: true
+          ERROR_ON_MISSING_EXEC_BIT: true
           VALIDATE_DOCKERFILE_HADOLINT: true
           VALIDATE_GITHUB_ACTIONS: true
           VALIDATE_GO: true
@@ -53,3 +53,5 @@ jobs:
           VALIDATE_PYTHON_PYLINT: true
           VALIDATE_SHELL_SHFMT: true
           VALIDATE_YAML: true
+          YAML_CONFIG_FILE: .yamllint.yml
+          YAML_ERROR_ON_WARNING: true
