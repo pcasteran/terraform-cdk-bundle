@@ -17,36 +17,8 @@ env:
   IMAGE_NAME: "cdktf-bundle"
   IMAGE_PLATFORMS: "linux/amd64,linux/arm64"
   CDKTF_VERSION: "0.13.3"
-  HADOLINT_VERSION: "v2.12.0"
-  REMARKLINT_VERSION: "0.3.1"
 
 jobs:
-
-  pre-commit:
-    name: Run pre-commit
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-      - uses: cloudposse/github-action-pre-commit@v3.0.0
-
-  static_analysis:
-    name: Static analysis
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Dockerfile linting
-        # At the moment, the hadolint action is not usable as it does not display
-        # the errors in the logs in case of a failure.
-        # See: https://github.com/hadolint/hadolint-action/issues/60
-        # uses: hadolint/hadolint-action@v3.0.0
-        run: docker run --rm -i hadolint/hadolint:${HADOLINT_VERSION} < Dockerfile
-
-      - name: Markdown linting
-        run: docker run --rm -i -v ${GITHUB_WORKSPACE}:/lint/input:ro ghcr.io/zemanlx/remark-lint:${REMARKLINT_VERSION} --frail .
 
   build_test_publish:
     name: Build, test and publish

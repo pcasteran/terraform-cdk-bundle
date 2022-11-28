@@ -29,7 +29,6 @@ FROM golang:${GO_BASE_VERSION} AS go_base
 
 ##
 
-# hadolint ignore=DL3006
 FROM ${BASE}_base
 
 ARG TARGETOS
