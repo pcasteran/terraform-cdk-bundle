@@ -17,9 +17,6 @@ env:
   CDKTF_VERSION: "0.13.3"
   HADOLINT_VERSION: "v2.12.0"
 
-permissions:
-  packages: write
-
 jobs:
 
 #  pre-commit:
@@ -47,6 +44,8 @@ jobs:
 #    needs:
 #      - pre-commit
 #      - static_analysis
+    permissions:
+      packages: write
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -101,20 +100,16 @@ jobs:
           # Instead we use `push: true` to push the image to a remote registry.
           push: ${{ github.event_name != 'pull_request' }}
 
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.8.0
+        with:
+          image-ref: "docker.io/my-organization/my-app:${{ github.sha }}"
+          format: "table"
+          exit-code: "1"
+          ignore-unfixed: true
+          vuln-type: "os,library"
+          severity: "CRITICAL,HIGH"
 
-      # TODO retag
-      # https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#tagging-container-images
-      #            ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ env.CDKTF_VERSION }}-${{ matrix.language }}
-      #            ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest-${{ matrix.language }}
 
-  #      - name: Build image
-  #        run: |
-  #          echo "Building image for language ${{ matrix.language }}"
-  #          DOCKER_BUILDKIT=1 docker build \
-  #            --build-arg "BASE=${{ matrix.language }}" \
-  #            --build-arg "CDKTF_VERSION=${CDKTF_VERSION}" \
-  #            --tag cdktf-bundle:${CDKTF_VERSION}-${{ matrix.language }} \
-  #            --tag cdktf-bundle:latest-${{ matrix.language }} \
-  #            .
 
   # TODO: action + propre (buildkit possible ?) ou carrément buildah
