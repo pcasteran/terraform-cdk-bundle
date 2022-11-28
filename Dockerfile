@@ -37,6 +37,7 @@ ARG TARGETARCH
 
 ARG NODE_VERSION
 ARG NPM_VERSION
+ARG TERRAFORM_VERSION
 ARG CDKTF_VERSION
 
 # Install node and npm.
@@ -46,7 +47,7 @@ RUN apk add --no-cache \
 
 # Install Terraform.
 WORKDIR /tmp
-RUN wget -O terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip && \
+RUN wget -qO terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip && \
     unzip terraform.zip && \
     rm terraform.zip && \
     mv terraform /usr/local/bin/
@@ -60,6 +61,7 @@ RUN npm install --global cdktf-cli@${CDKTF_VERSION}
 # Configure the HOME directory to be in the workspace directory for all users.
 ENV WORKSPACE_DIR="/workspace"
 ENV HOME=${WORKSPACE_DIR}/.home
+RUN mkdir -p ${WORKSPACE_DIR} && chmod 777 ${WORKSPACE_DIR}
 WORKDIR ${WORKSPACE_DIR}
 VOLUME ["${WORKSPACE_DIR}"]
 
