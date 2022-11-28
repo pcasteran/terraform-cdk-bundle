@@ -103,7 +103,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.8.0
         with:
-          image-ref: ${{ steps.docker_metadata.outputs.tags }}
+          image-ref: ${{ fromJSON(steps.docker_metadata.outputs.json)["tags"][0] }} # Get the first tag
           format: "table"
           exit-code: "1"
           ignore-unfixed: true
