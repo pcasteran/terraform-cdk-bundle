@@ -44,7 +44,7 @@ jobs:
         run: docker run --rm -i hadolint/hadolint:${HADOLINT_VERSION} < Dockerfile
 
       - name: Markdown linting
-        run: docker run --rm -i -v $(pwd):/lint/input:ro ghcr.io/zemanlx/remark-lint:${REMARKLINT_VERSION} --frail .
+        run: docker run --rm -i -v ${GITHUB_WORKSPACE}:/lint/input:ro ghcr.io/zemanlx/remark-lint:${REMARKLINT_VERSION} --frail .
 
   build_test_publish:
     name: Build, test and publish
