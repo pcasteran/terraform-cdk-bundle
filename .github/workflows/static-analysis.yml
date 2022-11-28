@@ -1,3 +1,4 @@
+---
 name: Static analysis
 
 on:
@@ -28,16 +29,25 @@ jobs:
           fetch-depth: 0
 
       - name: Lint Code Base
-        uses: github/super-linter@v4.9.7
+        uses: github/super-linter/slim@@v4.9.7
         env:
-          VALIDATE_ALL_CODEBASE: true # TODO: set to false
+          ACTIONS_RUNNER_DEBUG: true
+          VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-# Dockerfile
-# GitHub Actions
-# Golang
-# Markdown
-# Python3
-# Shell
-# YAML
+          ERROR_ON_MISSING_EXEC_BIT: true
+          # Declare the linters to use.
+          VALIDATE_BASH: true
+          VALIDATE_BASH_EXEC: true
+          VALIDATE_DOCKERFILE_HADOLINT: true
+          VALIDATE_GITHUB_ACTIONS: true
+          VALIDATE_GO: true
+          VALIDATE_JSON: true
+          VALIDATE_MARKDOWN: true
+          VALIDATE_PYTHON_BLACK: true
+          VALIDATE_PYTHON_FLAKE8: true
+          VALIDATE_PYTHON_ISORT: true
+          VALIDATE_PYTHON_MYPY: true
+          VALIDATE_PYTHON_PYLINT: true
+          VALIDATE_SHELL_SHFMT: true
+          VALIDATE_YAML: true
