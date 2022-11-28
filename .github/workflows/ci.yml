@@ -99,7 +99,7 @@ jobs:
           # The local registry does not support multi-platform images, so we can't use `load: true`.
           # See https://github.com/docker/buildx/issues/59
           # Instead we use `push: true` to push the image to a remote registry.
-          push: ${{ github.event_name != "pull_request" }}
+          push: ${{ github.event_name != 'pull_request' }}
 
 
       # TODO retag
