@@ -22,9 +22,9 @@ jobs:
 
   build_test_publish:
     name: Build, test and publish
-#    needs:
-#      - pre-commit
-#      - static_analysis
+    #    needs:
+    #      - pre-commit
+    #      - static_analysis
     permissions:
       packages: write
     runs-on: ubuntu-latest
@@ -85,7 +85,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.8.0
         with:
-          image-ref: ${{ fromJSON(steps.docker_metadata.outputs.json)['tags'][0] }} # Get the first tag
+          image-ref: ${{ fromJSON(steps.docker_metadata.outputs.json)['tags'][0] }}  # Take the first tag.
           format: "table"
           exit-code: "1"
           ignore-unfixed: true
