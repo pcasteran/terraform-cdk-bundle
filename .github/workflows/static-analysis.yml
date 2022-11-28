@@ -21,6 +21,8 @@ jobs:
 
   lint:
     name: lint
+    permissions:
+      statuses: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -28,10 +30,9 @@ jobs:
           # Full git history is needed to get a proper list of changed files within `super-linter`.
           fetch-depth: 0
 
-      - name: Lint Code Base
+      - name: Lint the code base
         uses: github/super-linter/slim@v4.9.7
         env:
-          ACTIONS_RUNNER_DEBUG: true
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
