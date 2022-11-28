@@ -62,6 +62,27 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - id: docker_metadata
+        name: Docker metadata
+        uses: docker/metadata-action@v4.1.1
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
+          flavor: |
+            prefix="toto"
+            suffix=${{ matrix.language }}
+#          tags: |
+#            type=ref,event=branch # TODO: to remove ?
+#            type=semver,pattern={{version}}
+#            type=semver,pattern={{major}}.{{minor}}
+            # TODO: type=sha if retagging noty possible ?
+
+
+      - name: debug
+        run: |
+          echo "version: ${{ steps.docker_metadata.outputs.version }}"
+          echo "tags: ${{ steps.docker_metadata.outputs.tags }}"
+          echo "labels: ${{ steps.docker_metadata.outputs.labels }}"
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v3.2.0
         with:
@@ -74,6 +95,8 @@ jobs:
           # Use a temporary tag based on the commit SHA.
           tags: |
             ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}-${{ matrix.language }}
+
+          labels: ${{ steps.docker_metadata.outputs.labels }}
 
           # The local registry does not support multi-platform images, so we can't use `load: true`.
           # See https://github.com/docker/buildx/issues/59
