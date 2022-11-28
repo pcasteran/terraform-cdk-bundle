@@ -40,10 +40,6 @@ ARG NODE_VERSION
 ARG NPM_VERSION
 ARG CDKTF_VERSION
 
-LABEL org.opencontainers.image.source="https://github.com/pcasteran/terraform-cdk-bundle"
-LABEL org.opencontainers.image.description="A minimal bundle containing the tools required to use CDK for Terraform"
-LABEL org.opencontainers.image.licenses="Apache-2.0"
-
 # Install node and npm.
 RUN apk add --no-cache \
     nodejs-current=${NODE_VERSION} \
