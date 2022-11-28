@@ -37,6 +37,7 @@ jobs:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ERROR_ON_MISSING_EXEC_BIT: true
+          LINTER_RULES_PATH: /
           # Declare the linters to use.
           VALIDATE_BASH: true
           VALIDATE_BASH_EXEC: true
