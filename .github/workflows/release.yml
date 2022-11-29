@@ -98,6 +98,6 @@ jobs:
 
       - name: Test image
         working-directory: ./test/${{ matrix.language }}
-        run: npx bats
+        run: npx bats .
         env:
-          DOCKER_IMAGE2: ${{ fromJSON(steps.docker_metadata.outputs.json)['tags'][0] }}  # Take the first tag.
+          DOCKER_IMAGE: ${{ fromJSON(steps.docker_metadata.outputs.json)['tags'][0] }}  # Take the first tag.
