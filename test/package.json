@@ -5,6 +5,6 @@
     "bats-assert": "bats-core/bats-assert"
   },
   "scripts": {
-    "test": "npx bats python"
+    "run_test": "npx bats"
   }
 }

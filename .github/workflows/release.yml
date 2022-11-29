@@ -98,4 +98,6 @@ jobs:
 
       - name: Test image
         working-directory: ./test/${{ matrix.language }}
-        run: npm test
+        run: npm run_test
+        env:
+          DOCKER_IMAGE: ${{ fromJSON(steps.docker_metadata.outputs.json)['tags'][0] }}  # Take the first tag.

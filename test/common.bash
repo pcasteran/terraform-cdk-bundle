@@ -25,8 +25,8 @@ run_cdktf_bundle() {
 
     docker run --rm -i \
         --name cdktf \
-        --user $(id -u):$(id -g) \
-        --volume $(pwd):/workspace \
+        --user "$(id -u)":"$(id -g)" \
+        --volume "$(pwd)":/workspace \
         ghcr.io/pcasteran/cdktf-bundle:ci-python \
         "$@"
 }
@@ -42,7 +42,7 @@ initialize_project_for_template() {
 
     # RUN CDKTF to initialize the project.
     run_cdktf_bundle cdktf init \
-      --template=${template} \
+      --template="${template}" \
       --local \
       --project-name="test-${template}" \
       --project-description="test-${template}" \
