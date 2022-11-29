@@ -5,7 +5,7 @@ WORKSPACE_DIR="workspace"
 init_environment() {
     echo "# Initializing the test environment" >&3
 
-    # Create the workspace directory.
+    # Create the workspace directory as CDKTF needs an empty directory in order to initialize a project.
     pushd .
     mkdir ${WORKSPACE_DIR}
     cd ${WORKSPACE_DIR}
@@ -21,13 +21,16 @@ clean_environment() {
 
 run_cdktf_bundle() {
     # Check that the image tag is set.
-    # TODO
+    if [ -z "${DOCKER_IMAGE}" ]; then
+        echo "The docker image to use is not provided, please set the variable DOCKER_IMAGE." >&2
+        return 1
+    fi
 
     docker run --rm -i \
         --name cdktf \
         --user "$(id -u)":"$(id -g)" \
         --volume "$(pwd)":/workspace \
-        ghcr.io/pcasteran/cdktf-bundle:ci-python \
+        ${DOCKER_IMAGE} \
         "$@"
 }
 
@@ -48,5 +51,3 @@ initialize_project_for_template() {
       --project-description="test-${template}" \
       --no-enable-crash-reporting
 }
-
-
