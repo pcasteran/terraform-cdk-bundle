@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 WORKSPACE_DIR="workspace"
 
 init_environment() {
@@ -30,7 +32,7 @@ run_cdktf_bundle() {
         --name cdktf \
         --user "$(id -u)":"$(id -g)" \
         --volume "$(pwd)":/workspace \
-        ${DOCKER_IMAGE} \
+        "${DOCKER_IMAGE}" \
         "$@"
 }
 
