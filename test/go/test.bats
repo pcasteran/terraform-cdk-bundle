@@ -14,7 +14,7 @@ teardown() {
 }
 
 initialize_project() {
-    initialize_project_for_template "python"
+    initialize_project_for_template "go"
 }
 
 @test "cdktf is installed" {
