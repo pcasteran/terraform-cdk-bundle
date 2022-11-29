@@ -101,5 +101,5 @@ jobs:
         run: cat package-lock.json
 
       - name: Test image
-        working-directory: ./test/${{ matrix.language }
+        working-directory: ./test/${{ matrix.language }}
         run: npm test
