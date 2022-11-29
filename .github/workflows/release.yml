@@ -93,7 +93,13 @@ jobs:
 #          severity: "CRITICAL,HIGH"
 
       - name: Install test framework
-        run: npm install -g bats
+        working-directory: ./test
+        run: npm install -g
+
+      - name: debug
+        working-directory: ./test
+        run: cat package-lock.json
 
       - name: Test image
-        run: bats -v
+        working-directory: ./test/${{ matrix.language }
+        run: npm test
