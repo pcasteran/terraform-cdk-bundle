@@ -42,5 +42,5 @@ initialize_project() {
     run_cdktf_bundle cdktf provider add random local
 
     # Replace the `main.go` file in the initialized project.
-    cp main_full_test.go ${WORKSPACE_DIR}/main.go
+    cp ../main_full_test.go ./main.go
 }
