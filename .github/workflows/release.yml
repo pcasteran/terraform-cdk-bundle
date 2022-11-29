@@ -2,16 +2,15 @@
 name: Release
 
 on:
-  workflow_dispatch:
-#  push:
-#    branches:
-#      - "main"
-#      - "ci" # TODO: to remove
-#    tags:
-#      - "v[0-9]+.[0-9]+.[0-9]+*"
-#  pull_request:
-#    branches:
-#      - "main"
+  push:
+    branches: # TODO: to remove
+      - "main"
+      - "ci"
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+*"
+  pull_request:
+    branches:
+      - "main"
 
 env:
   IMAGE_NAME: "cdktf-bundle"
@@ -92,3 +91,9 @@ jobs:
           vuln-type: "os,library"
           security-checks: "vuln"
           severity: "CRITICAL,HIGH"
+
+      - name: Install test framework
+        run: npm install -g bats
+
+      - name: Test image
+        run: bats -v
