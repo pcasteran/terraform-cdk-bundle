@@ -1,11 +1,15 @@
 package main
 
 import (
-	localFile "github.com/cdktf/cdktf-provider-local-go/local/file"
-	localProvider "github.com/cdktf/cdktf-provider-local-go/local/provider"
-	randomProvider "github.com/cdktf/cdktf-provider-random-go/random/provider"
-	"github.com/cdktf/cdktf-provider-random-go/random/stringresource"
+	"github.com/aws/constructs-go/constructs/v10"
+	"github.com/aws/jsii-runtime-go"
+	localFile "github.com/cdktf/cdktf-provider-local-go/local/v3/file"
+	localProvider "github.com/cdktf/cdktf-provider-local-go/local/v3/provider"
+	randomProvider "github.com/cdktf/cdktf-provider-random-go/random/v3/provider"
+	"github.com/cdktf/cdktf-provider-random-go/random/v3/stringresource"
 	"github.com/hashicorp/terraform-cdk-go/cdktf"
+	"os"
+	"path/filepath"
 )
 
 func NewMyStack(scope constructs.Construct, id string) cdktf.TerraformStack {
@@ -30,16 +34,18 @@ func NewMyStack(scope constructs.Construct, id string) cdktf.TerraformStack {
 		stack,
 		jsii.String("content"),
 		&stringresource.StringResourceConfig{
-			Length: jsii.Float64(20),
+			Length: jsii.Number(20),
 		},
 	)
 
+	currentDir, _ := os.Getwd()
+	filePath := filepath.Join(currentDir, "foo.txt")
 	file := localFile.NewFile(
 		stack,
 		jsii.String("file"),
 		&localFile.FileConfig{
-			Content:  fileContent.Content(),
-			Filename: jsii.String("foo.txt"),
+			Content:  fileContent.Result(),
+			Filename: jsii.String(filePath),
 		},
 	)
 

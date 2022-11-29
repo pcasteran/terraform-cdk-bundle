@@ -2,6 +2,7 @@
   "devDependencies": {
     "bats": "^1.8.2",
     "bats-support": "bats-core/bats-support",
-    "bats-assert": "bats-core/bats-assert"
+    "bats-assert": "bats-core/bats-assert",
+    "bats-file": "bats-core/bats-file"
   }
 }
