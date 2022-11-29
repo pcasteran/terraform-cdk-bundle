@@ -18,7 +18,7 @@ initialize_project() {
 }
 
 @test "cdktf is installed" {
-    run run_cdktf_bundle cdktf --version
+    run cdktf_bundle cdktf --version
     assert_output --partial "Creating the HOME directory"
 }
 

@@ -18,7 +18,7 @@ initialize_project() {
 }
 
 @test "cdktf is installed" {
-    run run_cdktf_bundle cdktf --version
+    run cdktf_bundle cdktf --version
     assert_output --partial "Creating the HOME directory"
 }
 
@@ -31,7 +31,7 @@ initialize_project() {
     initialize_project
 
     # Install the `random` provider.
-    run run_cdktf_bundle cdktf provider add random
+    run cdktf_bundle cdktf provider add random
     assert_output --partial "Found pre-built provider."
     assert_output --partial "Package installed."
 }
@@ -39,7 +39,7 @@ initialize_project() {
 @test "full test" {
     initialize_project
 
-    run_cdktf_bundle cdktf provider add random local
+    cdktf_bundle cdktf provider add random local
 
     # Replace the `main.go` file in the initialized project.
     cp ../main_full_test.go ./main.go

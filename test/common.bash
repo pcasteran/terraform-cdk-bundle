@@ -5,7 +5,7 @@ set -e
 WORKSPACE_DIR="workspace"
 
 init_environment() {
-    echo "# Initializing the test environment" >&3
+    echo "# Initializing the test environment"
 
     # Create the workspace directory as CDKTF needs an empty directory in order to initialize a project.
     pushd .
@@ -14,14 +14,14 @@ init_environment() {
 }
 
 clean_environment() {
-    echo "# Cleaning the test environment" >&3
+    echo "# Cleaning the test environment"
 
     # Delete the workspace directory.
     popd
     rm -rf ${WORKSPACE_DIR}
 }
 
-run_cdktf_bundle() {
+cdktf_bundle() {
     # Check that the image tag is set.
     if [ -z "${DOCKER_IMAGE}" ]; then
         echo "The docker image to use is not provided, please set the variable DOCKER_IMAGE." >&2
@@ -43,10 +43,10 @@ initialize_project_for_template() {
         echo "No template provided." >&2
         return 1
     fi
-    echo "# Initializing project with template '${template}'" >&3
+    echo "# Initializing project with template '${template}'"
 
     # RUN CDKTF to initialize the project.
-    run_cdktf_bundle cdktf init \
+    cdktf_bundle cdktf init \
       --template="${template}" \
       --local \
       --project-name="test-${template}" \
