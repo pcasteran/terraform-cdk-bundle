@@ -65,32 +65,32 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=sha
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v3.2.0
-        with:
-          context: .
-          build-args: |
-            BASE=${{ matrix.language }}
-            CDKTF_VERSION=${{ env.CDKTF_VERSION }}
-          platforms: ${{ env.IMAGE_PLATFORMS }}
-          tags: ${{ steps.docker_metadata.outputs.tags }}
-          labels: ${{ steps.docker_metadata.outputs.labels }}
-
-          # The local registry does not support multi-platform images, so we can't use `load: true`.
-          # See https://github.com/docker/buildx/issues/59
-          # Instead we use `push: true` to push the image to a remote registry.
-          push: ${{ github.event_name != 'pull_request' }}
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.8.0
-        with:
-          image-ref: ${{ fromJSON(steps.docker_metadata.outputs.json)['tags'][0] }}  # Take the first tag.
-          format: "table"
-          exit-code: "1"
-          ignore-unfixed: true
-          vuln-type: "os,library"
-          security-checks: "vuln"
-          severity: "CRITICAL,HIGH"
+#      - name: Build and push Docker image
+#        uses: docker/build-push-action@v3.2.0
+#        with:
+#          context: .
+#          build-args: |
+#            BASE=${{ matrix.language }}
+#            CDKTF_VERSION=${{ env.CDKTF_VERSION }}
+#          platforms: ${{ env.IMAGE_PLATFORMS }}
+#          tags: ${{ steps.docker_metadata.outputs.tags }}
+#          labels: ${{ steps.docker_metadata.outputs.labels }}
+#
+#          # The local registry does not support multi-platform images, so we can't use `load: true`.
+#          # See https://github.com/docker/buildx/issues/59
+#          # Instead we use `push: true` to push the image to a remote registry.
+#          push: ${{ github.event_name != 'pull_request' }}
+#
+#      - name: Run Trivy vulnerability scanner
+#        uses: aquasecurity/trivy-action@0.8.0
+#        with:
+#          image-ref: ${{ fromJSON(steps.docker_metadata.outputs.json)['tags'][0] }}  # Take the first tag.
+#          format: "table"
+#          exit-code: "1"
+#          ignore-unfixed: true
+#          vuln-type: "os,library"
+#          security-checks: "vuln"
+#          severity: "CRITICAL,HIGH"
 
       - name: Install test framework
         run: npm install -g bats
