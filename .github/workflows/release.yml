@@ -94,7 +94,7 @@ jobs:
 
       - name: Install test framework
         working-directory: ./test
-        run: npm install -g
+        run: npm install
 
       - name: debug
         working-directory: ./test
