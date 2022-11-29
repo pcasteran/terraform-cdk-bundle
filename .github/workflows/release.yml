@@ -96,10 +96,6 @@ jobs:
         working-directory: ./test
         run: npm install
 
-      - name: debug
-        working-directory: ./test
-        run: cat package-lock.json
-
       - name: Test image
         working-directory: ./test/${{ matrix.language }}
         run: npm test

@@ -5,8 +5,6 @@ load '../node_modules/bats-assert/load'
 
 setup() {
     echo "Initializing the test environment"
-    echo $(pwd)
-    ls -al
     pushd .
     mkdir workspace
     cd workspace
@@ -16,16 +14,12 @@ teardown() {
     echo "Cleaning the test environment"
 
     # Delete the `workspace` directory inside the current directory.
-    echo $(pwd)
     popd
-    echo $(pwd)
-    ls -al
     rm -rf workspace
-    ls -al
 }
 
 cdktf_bundle() {
-  docker run --rm -it \
+  docker run --rm -i \
     --name cdktf \
     --user $(id -u):$(id -g) \
     --volume $(pwd):/workspace \
