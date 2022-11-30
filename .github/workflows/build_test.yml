@@ -1,9 +1,9 @@
 ---
-name: Build
+name: Build and test
 
 on:
   push:
-    branches: # TODO: to remove
+    branches: # TODO: to remove (or keep main ?)
       - "main"
       - "ci"
     tags:
