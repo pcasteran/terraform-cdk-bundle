@@ -61,3 +61,42 @@ initialize_project() {
     assert_success
     assert_output --partial "file_name = /workspace/foo.txt"
 }
+
+@test "poetry" {
+    initialize_project
+
+    # Check the initial state.
+    assert_file_exist "Pipfile"
+    assert_file_exist "Pipfile.lock"
+    assert_file_not_exist "pyproject.toml"
+    assert_file_not_exist "poetry.lock"
+
+    # Initialize the Poetry project.
+    run poetry init \
+      --no-interaction \
+      --name="test"
+    assert_success
+    assert_file_exist "pyproject.toml"
+    assert_file_not_exist "poetry.lock"
+
+    # Create the virtual environment and install the project dependencies.
+    run poetry install
+    assert_success
+    assert_file_exist "poetry.lock"
+
+    # Synchronize the Poetry project with the Pipenv file.
+    run cdktf_bundle pipenv-poetry-migrate -f Pipfile -t pyproject.toml
+    assert_success
+    assert_file_contains "pyproject.toml" '^cdktf = ".*"'
+
+    # Install the `random` provider and synchronize again the Poetry project.
+    cdktf_bundle cdktf provider add random
+    run cdktf_bundle pipenv-poetry-migrate -f Pipfile -t pyproject.toml
+    assert_success
+    assert_file_contains "pyproject.toml" '^cdktf-cdktf-provider-random = ".*"'
+
+    # Install the dependencies in the Poetry managed virtual environment.
+    run poetry update
+    assert_file_contains "poetry.lock" '^name = "cdktf"$'
+    assert_file_contains "poetry.lock" '^name = "cdktf-cdktf-provider-random"$'
+}
