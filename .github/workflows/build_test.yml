@@ -24,7 +24,7 @@ jobs:
       fail-fast: false
       matrix:
         language:
-          #          - python
+          - python
           - go
         platform:
           #          - os: linux
@@ -37,10 +37,7 @@ jobs:
 
       - name: Set up Docker
         if: ${{ startsWith(matrix.platform.runner, 'macos') }}
-        #        uses: docker-practice/actions-setup-docker@1.0.11
-        run: |
-          brew install docker colima
-          colima start
+        run: colima start
 
       - name: Set up QEMU
         if: ${{ github.event_name != 'pull_request' }}
@@ -117,6 +114,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install Poetry
+        if: ${{ matrix.language == 'python' }}
         run: curl -sSL https://install.python-poetry.org | python3 -
 
       - name: Test image
