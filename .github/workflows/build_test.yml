@@ -37,7 +37,7 @@ jobs:
 
       - name: Set up Docker
         if: ${{ startsWith(matrix.platform.runner, 'macos') }}
-        uses: docker-practice/actions-setup-docker@@v1.0.11
+        uses: docker-practice/actions-setup-docker@v1.0.11
 
       - name: Set up QEMU
         if: ${{ github.event_name != 'pull_request' }}
@@ -70,6 +70,10 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=sha
 
+      - name: Get main image tag
+        # Take the first tag and make it available as an environment variable.
+        run: echo "DOCKER_IMAGE_TAG=${{ fromJSON(steps.docker_metadata.outputs.json)['tags'][0] }}" >> "${GITHUB_ENV}"
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v3.2.0
         with:
@@ -94,7 +98,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.8.0
         with:
-          image-ref: ${{ fromJSON(steps.docker_metadata.outputs.json)['tags'][0] }}  # Take the first tag.
+          image-ref: ${{ env.DOCKER_IMAGE_TAG }}
           format: "table"
           exit-code: "0"  # TODO: set to "1" when vulnerability is fixed on the terraform binary
           ignore-unfixed: true
@@ -115,4 +119,4 @@ jobs:
         working-directory: ./test/${{ matrix.language }}
         run: npx bats .
         env:
-          DOCKER_IMAGE: ${{ fromJSON(steps.docker_metadata.outputs.json)['tags'][0] }}  # Take the first tag.
+          DOCKER_IMAGE: ${{ env.DOCKER_IMAGE_TAG }}
