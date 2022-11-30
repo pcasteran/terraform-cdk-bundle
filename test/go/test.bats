@@ -43,8 +43,11 @@ initialize_project() {
 @test "full test" {
     initialize_project
 
+    # Add the providers.
     cdktf_bundle cdktf provider add random local
-    go mod download
+
+    run cdktf_bundle go mod download
+    assert_success
 
     # Replace the `main.go` file in the initialized project.
     cp ../main_full_test.go ./main.go

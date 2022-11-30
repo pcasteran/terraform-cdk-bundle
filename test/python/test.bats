@@ -44,6 +44,7 @@ initialize_project() {
 @test "full test" {
     initialize_project
 
+    # Add the providers.
     cdktf_bundle cdktf provider add random local
 
     # Replace the `main.py` file in the initialized project.
