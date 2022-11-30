@@ -26,16 +26,13 @@ jobs:
     #      - static_analysis
     permissions:
       packages: write
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         language:
           - python
           - go
-        os:
-          - ubuntu-latest
-          - macos-latest
-    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
 
@@ -60,7 +57,7 @@ jobs:
         with:
           images: ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
           flavor: |
-            suffix=-${{ matrix.language }}-${{ matrix.os }}
+            suffix=-${{ matrix.language }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
