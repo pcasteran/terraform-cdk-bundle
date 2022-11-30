@@ -57,7 +57,7 @@ initialize_project() {
     assert_file_exist "foo.txt"
 
     # Check the output.
-    run cdktf_bundle cdktf output dev
+    run cdktf_bundle cdktf output test
     assert_success
     assert_output --partial "file_name = /workspace/foo.txt"
 }

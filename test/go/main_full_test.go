@@ -44,11 +44,12 @@ func NewMyStack(scope constructs.Construct, id string) cdktf.TerraformStack {
 		stack,
 		jsii.String("file"),
 		&localFile.FileConfig{
-			Content:  fileContent.Result(),
 			Filename: jsii.String(filePath),
+			Content:  fileContent.Result(),
 		},
 	)
 
+	// Declare the outputs.
 	cdktf.NewTerraformOutput(
 		stack,
 		jsii.String("file_name"),
@@ -63,8 +64,6 @@ func NewMyStack(scope constructs.Construct, id string) cdktf.TerraformStack {
 
 func main() {
 	app := cdktf.NewApp(nil)
-
-	NewMyStack(app, "dev")
-
+	NewMyStack(app, "test")
 	app.Synth()
 }
