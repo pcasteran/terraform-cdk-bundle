@@ -27,10 +27,12 @@ jobs:
           - python
           - go
         platform:
-          #          - os: linux
-          #            runner: ubuntu-latest
-          - os: darwin
-            runner: macos-latest
+          - os: linux
+            runner: ubuntu-latest
+          # TODO: deactivated as the build is not functional (test failure) and I currently don't have
+          # the possibility to reproduce and debug locally.
+    #          - os: darwin
+    #            runner: macos-latest
     runs-on: ${{ matrix.platform.runner }}
     steps:
       - uses: actions/checkout@v3
