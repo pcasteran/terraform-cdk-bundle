@@ -37,7 +37,7 @@ jobs:
 
       - name: Set up Docker
         if: ${{ startsWith(matrix.platform.runner, 'macos') }}
-        uses: docker-practice/actions-setup-docker@v1.0.11
+        uses: docker-practice/actions-setup-docker@1.0.11
 
       - name: Set up QEMU
         if: ${{ github.event_name != 'pull_request' }}
