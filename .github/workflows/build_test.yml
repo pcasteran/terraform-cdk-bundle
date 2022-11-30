@@ -24,11 +24,11 @@ jobs:
       fail-fast: false
       matrix:
         language:
-          - python
+          #          - python
           - go
         platform:
-          - os: linux
-            runner: ubuntu-latest
+          #          - os: linux
+          #            runner: ubuntu-latest
           - os: darwin
             runner: macos-latest
     runs-on: ${{ matrix.platform.runner }}
@@ -37,7 +37,10 @@ jobs:
 
       - name: Set up Docker
         if: ${{ startsWith(matrix.platform.runner, 'macos') }}
-        uses: docker-practice/actions-setup-docker@1.0.11
+        #        uses: docker-practice/actions-setup-docker@1.0.11
+        run: |
+          brew install docker colima
+          colima start
 
       - name: Set up QEMU
         if: ${{ github.event_name != 'pull_request' }}
@@ -96,6 +99,7 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
 
       - name: Run Trivy vulnerability scanner
+        if: ${{ matrix.platform.os == 'linux' }} # Container scanning only works on linux.
         uses: aquasecurity/trivy-action@0.8.0
         with:
           image-ref: ${{ env.DOCKER_IMAGE_TAG }}
