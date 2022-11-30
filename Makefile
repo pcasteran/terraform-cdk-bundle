@@ -21,3 +21,14 @@ lint: ## Lint the projet sources
 		--env-file ".github/super-linter.env" \
 		--volume "$(shell pwd)":/tmp/lint:ro \
 		github/super-linter:slim-v4
+
+.PHONY: lint_shell
+lint_shell: ## Open a shell in a linter container
+	docker run --rm -it \
+		--name super-linter \
+		--env RUN_LOCAL=true \
+		--env-file ".github/super-linter.env" \
+		--volume "$(shell pwd)":/tmp/lint \
+		--entrypoint /bin/bash \
+		--workdir /tmp/lint \
+		github/super-linter:slim-v4

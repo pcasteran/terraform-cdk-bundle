@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os
 
-from cdktf import App, TerraformStack, TerraformOutput
+from cdktf import App, TerraformOutput, TerraformStack
 from cdktf_cdktf_provider_local.file import File
 from cdktf_cdktf_provider_local.provider import LocalProvider
 from cdktf_cdktf_provider_random.provider import RandomProvider
@@ -14,38 +14,18 @@ class MyStack(TerraformStack):
         super().__init__(scope, stack_id)
 
         # Initialize the providers.
-        LocalProvider(
-            scope=self,
-            id="local"
-        )
+        LocalProvider(scope=self, id="local")
 
-        RandomProvider(
-            scope=self,
-            id="random"
-        )
+        RandomProvider(scope=self, id="random")
 
         # Declare the resources.
-        file_content = StringResource(
-            scope=self,
-            id="content",
-            length=20
-        )
+        file_content = StringResource(scope=self, id="content", length=20)
 
         file_path = os.path.join(os.getcwd(), "foo.txt")
-        file = File(
-            scope=self,
-            id_="file",
-            filename=file_path,
-            content=file_content.result
-        )
+        file = File(scope=self, id_="file", filename=file_path, content=file_content.result)
 
         # Declare the outputs.
-        TerraformOutput(
-            scope=self,
-            id="file_name",
-            description="The file name",
-            value=file.filename
-        )
+        TerraformOutput(scope=self, id="file_name", description="The file name", value=file.filename)
 
 
 app = App()

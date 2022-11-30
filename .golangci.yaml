@@ -1,0 +1,4 @@
+# Use the default configuration but exclude `typecheck` which produces false-positives.
+linters:
+  disable:
+    - typecheck
