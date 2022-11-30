@@ -1,6 +1,66 @@
 # terraform-cdk-bundle
 
-A minimal bundle containing the tools required to use CDK for Terraform
+A minimal bundle containing the tools required to use [CDK for Terraform](https://github.com/hashicorp/terraform-cdk)
+with your favorite programming language.
+
+The tools are packaged and distributed as a Docker image, available in many flavors:
+- language: `python` and `go`
+- operating system: `linux` and `darwin`
+- platform: `amd64` and `arm64`.
+
+## How to use
+
+The easiest way to use the tool bundle is to configure an alias referencing the image you want to use:
+```bash
+# Python
+alias cdktf_bundle='docker run --rm -it \
+  --name cdktf \
+  --user $(id -u):$(id -g) \
+  --volume $(pwd):/workspace \
+  ghcr.io/pcasteran/cdktf-bundle:latest-python-linux'
+
+# Go
+alias cdktf_bundle='docker run --rm -it \
+  --name cdktf \
+  --user $(id -u):$(id -g) \
+  --volume $(pwd):/workspace \
+  ghcr.io/pcasteran/cdktf-bundle:latest-go-linux'
+```
+
+Then, you just have to prepend `cdktf_bundle` to all the commands that you want to run, for example:
+```bash
+# Python
+cdktf_bundle cdktf init --template=python --local --project-name=test --project-description=test --no-enable-crash-reporting
+cdktf_bundle cdktf provider add google
+
+cdktf_bundle pipenv run ./main.py
+cdktf_bundle cdktf deploy
+
+# Go
+cdktf_bundle cdktf init --template=go --local --project-name=test --project-description=test --no-enable-crash-reporting
+cdktf_bundle cdktf provider add google
+cdktf_bundle go mod download
+
+cdktf_bundle go run main.go
+cdktf_bundle cdktf deploy
+```
+
+Run from the directory containing the CDKTF configuration.
+Directory mounted as a volume so the configuration is available from inside the container.
+CDKTF produces the run artifacts inside the `cdktf.out` directory.
+Persist the various caches (downloaded Terraform providers, Python virtual environments) inside the `.home` folder that will be automatically created inside the current directory (and marked as git ignored).
+Docker container is run as the current user (`--user` option) to avoid access rights issues on the created files.
+
+## How to build
+
+
+
+
+
+
+
+
+
 
 ## Python
 
