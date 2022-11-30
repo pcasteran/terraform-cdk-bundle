@@ -20,15 +20,24 @@ jobs:
     name: Build image
     permissions:
       packages: write
-    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         language:
           - python
           - go
+        platform:
+          - os: linux
+            runner: ubuntu-latest
+          - os: darwin
+            runner: macos-latest
+    runs-on: ${{ matrix.platform.runner }}
     steps:
       - uses: actions/checkout@v3
+
+      - name: Set up Docker
+        if: ${{ startsWith(matrix.platform.runner, 'macos') }}
+        uses: docker-practice/actions-setup-docker@@v1.0.11
 
       - name: Set up QEMU
         if: ${{ github.event_name != 'pull_request' }}
@@ -53,7 +62,7 @@ jobs:
         with:
           images: ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
           flavor: |
-            suffix=-${{ matrix.language }}
+            suffix=-${{ matrix.language }}-${{ matrix.platform.os }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
