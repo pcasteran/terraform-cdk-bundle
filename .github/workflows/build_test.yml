@@ -3,9 +3,6 @@ name: Build and test
 
 on:
   push:
-    branches: # TODO: to remove (or keep main ?)
-      - "main"
-      - "ci"
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+*"
   pull_request:
