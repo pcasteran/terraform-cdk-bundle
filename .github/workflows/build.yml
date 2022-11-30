@@ -1,5 +1,5 @@
 ---
-name: Release
+name: Build
 
 on:
   push:
@@ -20,7 +20,7 @@ env:
 jobs:
 
   build_test_publish:
-    name: Build, test and publish
+    name: Build image
     #    needs:
     #      - pre-commit
     #      - static_analysis
@@ -34,7 +34,7 @@ jobs:
           - go
         os:
           - ubuntu-latest
-          - ubuntu-20.04
+          - macos-latest
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
