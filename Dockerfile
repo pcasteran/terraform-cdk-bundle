@@ -13,10 +13,6 @@ ARG CDKTF_VERSION="0.13.3"
 
 ##
 
-FROM hashicorp/terraform:${TERRAFORM_VERSION} AS terraform
-
-##
-
 FROM python:${PYTHON_BASE_VERSION} AS python_base
 
 ARG PIPENV_VERSION
@@ -36,8 +32,12 @@ FROM golang:${GO_BASE_VERSION} AS go_base
 # hadolint ignore=DL3006
 FROM ${BASE}_base
 
+ARG TARGETOS
+ARG TARGETARCH
+
 ARG NODE_VERSION
 ARG NPM_VERSION
+ARG TERRAFORM_VERSION
 ARG CDKTF_VERSION
 
 # Install node and npm.
@@ -45,8 +45,12 @@ RUN apk add --no-cache \
     nodejs-current=${NODE_VERSION} \
     npm=${NPM_VERSION}
 
-# Install Terraform (copy it from the official Docker image).
-COPY --from=terraform /bin/terraform /bin/terraform
+# Install Terraform.
+WORKDIR /tmp
+RUN wget -qO terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip && \
+    unzip terraform.zip && \
+    rm terraform.zip && \
+    mv terraform /usr/local/bin/
 
 # Install CDK for Terraform.
 ENV CHECKPOINT_DISABLE=1
@@ -57,6 +61,7 @@ RUN npm install --global cdktf-cli@${CDKTF_VERSION}
 # Configure the HOME directory to be in the workspace directory for all users.
 ENV WORKSPACE_DIR="/workspace"
 ENV HOME=${WORKSPACE_DIR}/.home
+RUN mkdir -p ${WORKSPACE_DIR} && chmod 777 ${WORKSPACE_DIR}
 WORKDIR ${WORKSPACE_DIR}
 VOLUME ["${WORKSPACE_DIR}"]
 

@@ -25,7 +25,7 @@ alias cdktf_bundle='docker run --rm -it \
   --volume $(pwd):/workspace \
   --volume "${HOME}/.config/gcloud/application_default_credentials.json":/gcp/adc.json:ro \
   --env GOOGLE_APPLICATION_CREDENTIALS=/gcp/adc.json \
-  cdktf-bundle:latest-python'
+  ghcr.io/pcasteran/cdktf-bundle:ci-python'
 
 cdktf_bundle cdktf init --template=python --local --project-name=test --project-description=test --no-enable-crash-reporting
 
@@ -72,21 +72,21 @@ DOCKER_BUILDKIT=1 docker build \
 Use it:
 
 ```bash
-alias cdktf_bundle_go='docker run --rm -it \
+alias cdktf_bundle='docker run --rm -it \
   --name cdktf \
   --user $(id -u):$(id -g) \
   --volume $(pwd):/workspace \
   --volume "${HOME}/.config/gcloud/application_default_credentials.json":/gcp/adc.json:ro \
   --env GOOGLE_APPLICATION_CREDENTIALS=/gcp/adc.json \
-  cdktf-bundle:latest-go'
+  ghcr.io/pcasteran/cdktf-bundle:ci-go'
 
-cdktf_bundle_go cdktf init --template=go --local --project-name=test --project-description=test --no-enable-crash-reporting
+cdktf_bundle cdktf init --template=go --local --project-name=test --project-description=test --no-enable-crash-reporting
 
-cdktf_bundle_go cdktf provider add google
+cdktf_bundle cdktf provider add google
 
 go build
-cdktf_bundle_go cdktf deploy
-cdktf_bundle_go cdktf destroy
+cdktf_bundle cdktf deploy
+cdktf_bundle cdktf destroy
 ```
 
 ## TODO
