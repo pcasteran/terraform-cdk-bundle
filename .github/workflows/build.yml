@@ -11,6 +11,7 @@ on:
   pull_request:
     branches:
       - "main"
+      - "initial_version"  # TODO: to remove
 
 env:
   IMAGE_NAME: "cdktf-bundle"
@@ -37,6 +38,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Set up QEMU
+        if: ${{ github.event_name != 'pull_request' }}
         uses: docker/setup-qemu-action@v2.1.0
         with:
           platforms: ${{ env.IMAGE_PLATFORMS }}
@@ -45,6 +47,7 @@ jobs:
         uses: docker/setup-buildx-action@v2.2.1
 
       - name: Login to GitHub Container Registry
+        if: ${{ github.event_name != 'pull_request' }}
         uses: docker/login-action@v2.1.0
         with:
           registry: ghcr.io
@@ -72,13 +75,18 @@ jobs:
           build-args: |
             BASE=${{ matrix.language }}
             CDKTF_VERSION=${{ env.CDKTF_VERSION }}
-          platforms: ${{ env.IMAGE_PLATFORMS }}
+
+          # In case of invocation in the context of a PR, build only for the `linux/amd64` platform.
+          # Otherwise, build for all the required platforms.
+          platforms: ${{ github.event_name == 'pull_request' && 'linux/amd64' || env.IMAGE_PLATFORMS }}
+
           tags: ${{ steps.docker_metadata.outputs.tags }}
           labels: ${{ steps.docker_metadata.outputs.labels }}
 
-          # The local registry does not support multi-platform images, so we can't use `load: true`.
-          # See https://github.com/docker/buildx/issues/59
-          # Instead we use `push: true` to push the image to a remote registry.
+          # The local registry does not support multi-platform images (see https://github.com/docker/buildx/issues/59).
+          # In case of invocation in the context of a PR, load the image to the local registry as it is single platform.
+          load: ${{ github.event_name == 'pull_request' }}
+          # Otherwise, push the image to the remote registry.
           push: ${{ github.event_name != 'pull_request' }}
 
 #      - name: Run Trivy vulnerability scanner
