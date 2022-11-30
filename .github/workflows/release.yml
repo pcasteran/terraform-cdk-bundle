@@ -26,13 +26,16 @@ jobs:
     #      - static_analysis
     permissions:
       packages: write
-    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         language:
           - python
           - go
+        os:
+          - ubuntu-latest
+          - ubuntu-20.04
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
 
@@ -57,7 +60,7 @@ jobs:
         with:
           images: ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
           flavor: |
-            suffix=-${{ matrix.language }}
+            suffix=-${{ matrix.language }}-${{ matrix.os }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -65,22 +68,22 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=sha
 
-#      - name: Build and push Docker image
-#        uses: docker/build-push-action@v3.2.0
-#        with:
-#          context: .
-#          build-args: |
-#            BASE=${{ matrix.language }}
-#            CDKTF_VERSION=${{ env.CDKTF_VERSION }}
-#          platforms: ${{ env.IMAGE_PLATFORMS }}
-#          tags: ${{ steps.docker_metadata.outputs.tags }}
-#          labels: ${{ steps.docker_metadata.outputs.labels }}
-#
-#          # The local registry does not support multi-platform images, so we can't use `load: true`.
-#          # See https://github.com/docker/buildx/issues/59
-#          # Instead we use `push: true` to push the image to a remote registry.
-#          push: ${{ github.event_name != 'pull_request' }}
-#
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v3.2.0
+        with:
+          context: .
+          build-args: |
+            BASE=${{ matrix.language }}
+            CDKTF_VERSION=${{ env.CDKTF_VERSION }}
+          platforms: ${{ env.IMAGE_PLATFORMS }}
+          tags: ${{ steps.docker_metadata.outputs.tags }}
+          labels: ${{ steps.docker_metadata.outputs.labels }}
+
+          # The local registry does not support multi-platform images, so we can't use `load: true`.
+          # See https://github.com/docker/buildx/issues/59
+          # Instead we use `push: true` to push the image to a remote registry.
+          push: ${{ github.event_name != 'pull_request' }}
+
 #      - name: Run Trivy vulnerability scanner
 #        uses: aquasecurity/trivy-action@0.8.0
 #        with:
