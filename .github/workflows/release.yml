@@ -95,6 +95,11 @@ jobs:
       - name: Install test framework
         working-directory: ./test
         run: npm install
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Install Poetry
+        run: curl -sSL https://install.python-poetry.org | python3 -
 
       - name: Test image
         working-directory: ./test/${{ matrix.language }}
