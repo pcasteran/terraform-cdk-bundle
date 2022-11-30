@@ -8,7 +8,6 @@ on:
   pull_request:
     branches:
       - "main"
-      - "initial_version"  # TODO: to remove
 
 env:
   IMAGE_NAME: "cdktf-bundle"
@@ -19,9 +18,6 @@ jobs:
 
   build_test_publish:
     name: Build image
-    #    needs:
-    #      - pre-commit
-    #      - static_analysis
     permissions:
       packages: write
     runs-on: ubuntu-latest
