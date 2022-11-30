@@ -31,7 +31,8 @@ jobs:
           fetch-depth: 0
 
       - name: Load the linter configuration
-        run: cat .github/super-linter.env >> "${GITHUB_ENV}"
+        # Read the configuration file and exclude the comments.
+        run: sed '/^#/d' .github/super-linter.env >> "${GITHUB_ENV}"
 
       - name: Lint the code base
         uses: github/super-linter/slim@v4.9.7
