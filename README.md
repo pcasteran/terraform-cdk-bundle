@@ -3,6 +3,10 @@
 A minimal bundle containing the tools required to use [CDK for Terraform](https://github.com/hashicorp/terraform-cdk)
 with your favorite programming language.
 
+The main advantage of such a bundle is that, to be able to develop and deploy CDKTF code, there is no need to install a
+programming language toolchain, node or even Terraform . This makes it great for clean dev and CI environments in which
+a versioned set of tools means reproducible builds.
+
 The tools are packaged and distributed as a Docker image, available in many flavors:
 
 - language: `python` and `go`
@@ -11,7 +15,7 @@ The tools are packaged and distributed as a Docker image, available in many flav
 
 ## How to use
 
-The easiest way to use the bundle is to configure an alias referencing the image you want to use:
+The easiest way to use the bundle is to configure an alias referencing the target image:
 
 ```bash
 # Python
@@ -74,16 +78,24 @@ have the correct owner.
 
 ## How to build
 
-To build the image,
+If you need to build the image, it is advised (but not mandatory) to
+use [`docker buildx`](https://docs.docker.com/engine/reference/commandline/buildx_build/) which supports
+the [BuildKit](https://docs.docker.com/build/buildkit/) build backend.
 
-- BASE: `python` or `go`
+Some build arguments are available to customize the image content, the can be found in the [Dockerfile](Dockerfile).
+Here are the most important ones:
+
+- `BASE`: name of the base layer to use, this layer contains the chosen programing language toolchain (`python` or `go`)
+- `CDKTF_VERSION`: the version of the [cdktf-cli](https://www.npmjs.com/package/cdktf-cli) package to install
+- `TERRAFORM_VERSION`: the version of [Terraform](https://developer.hashicorp.com/terraform/downloads) to install
+
+For example:
 
 ```bash
 docker buildx build \
   --build-arg "BASE=python" \
   --build-arg "CDKTF_VERSION=0.13.3" \
-  --tag cdktf-bundle:${CDKTF_VERSION}-python \
-  --tag cdktf-bundle:latest-python \
+  --tag cdktf-bundle:my-python \
   .
 ```
 
