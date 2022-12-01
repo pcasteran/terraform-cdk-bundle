@@ -10,7 +10,7 @@ The tools are packaged and distributed as a Docker image, available in many flav
 
 ## How to use
 
-The easiest way to use the tool bundle is to configure an alias referencing the image you want to use:
+The easiest way to use the bundle is to configure an alias referencing the image you want to use:
 ```bash
 # Python
 alias cdktf_bundle='docker run --rm -it \
@@ -30,14 +30,20 @@ alias cdktf_bundle='docker run --rm -it \
 Then, you just have to prepend `cdktf_bundle` to all the commands that you want to run, for example:
 ```bash
 # Python
-cdktf_bundle cdktf init --template=python --local --project-name=test --project-description=test --no-enable-crash-reporting
+cdktf_bundle cdktf init --template=python --local \
+  --project-name=test --project-description=test \
+  --no-enable-crash-reporting
+
 cdktf_bundle cdktf provider add google
 
 cdktf_bundle pipenv run ./main.py
 cdktf_bundle cdktf deploy
 
 # Go
-cdktf_bundle cdktf init --template=go --local --project-name=test --project-description=test --no-enable-crash-reporting
+cdktf_bundle cdktf init --template=go --local \
+  --project-name=test --project-description=test \
+  --no-enable-crash-reporting
+
 cdktf_bundle cdktf provider add google
 cdktf_bundle go mod download
 
@@ -45,11 +51,17 @@ cdktf_bundle go run main.go
 cdktf_bundle cdktf deploy
 ```
 
-Run from the directory containing the CDKTF configuration.
-Directory mounted as a volume so the configuration is available from inside the container.
-CDKTF produces the run artifacts inside the `cdktf.out` directory.
-Persist the various caches (downloaded Terraform providers, Python virtual environments) inside the `.home` folder that will be automatically created inside the current directory (and marked as git ignored).
-Docker container is run as the current user (`--user` option) to avoid access rights issues on the created files.
+If using version `0.13.3`, just ignore the following warning:
+```bash
+Could not run version check - A system error occurred: uv_os_get_passwd returned ENOENT (no such file or directory)
+```
+
+As usual when using the [CDKTF CLI](https://developer.hashicorp.com/terraform/cdktf/cli-reference/commands), all the commands must be executed from the directory containing the CDKTF configuration. This directory is mounted as a read-write volume in the runned container (`--volume` option), this allows to:
+- access the CDKTF configuration files from inside the container
+- write the run artifacts inside the `cdktf.out` directory
+- persist the different caches (downloaded Terraform providers, Python virtual environments) inside the `.home` folder that will be automatically created (and marked as git ignored)
+
+The Docker container is run as the current user (`--user` option), so all the files created during the execution will have the correct owner.
 
 ## How to build
 
@@ -151,8 +163,4 @@ cdktf_bundle cdktf destroy
 
 ## TODO
 
-Ignore the following warnings:
 
-```bash
-Could not run version check - A system error occurred: uv_os_get_passwd returned ENOENT (no such file or directory)
-```
