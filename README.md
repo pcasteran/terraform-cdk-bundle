@@ -3,8 +3,8 @@
 A minimal bundle containing the tools required to use [CDK for Terraform](https://github.com/hashicorp/terraform-cdk)
 with your favorite programming language.
 
-The main advantage of such a bundle is that, to be able to develop and deploy CDKTF code, there is no need to install a
-programming language toolchain, node or even Terraform . This makes it great for clean dev and CI environments in which
+The main advantage of such a bundle is that, to be able to develop and deploy ***CDKTF*** code, there is no need to install a
+programming language toolchain, Node.js or even Terraform . This makes it great for clean dev and CI environments in which
 a versioned set of tools means reproducible builds.
 
 The tools are packaged and distributed as a Docker image, available in many flavors:
@@ -15,7 +15,7 @@ The tools are packaged and distributed as a Docker image, available in many flav
 
 ## How to use
 
-The easiest way to use the bundle is to configure an alias referencing the target image:
+The easiest way to use the bundle is to configure an alias referencing the required image:
 
 ```bash
 # Python
@@ -65,10 +65,10 @@ Could not run version check - A system error occurred: uv_os_get_passwd returned
 ```
 
 As usual when using the [CDKTF CLI](https://developer.hashicorp.com/terraform/cdktf/cli-reference/commands), all the
-commands must be executed from the directory containing the CDKTF configuration. This directory is mounted as a
+commands must be executed from the directory containing the ***CDKTF*** configuration. This directory is mounted as a
 read-write volume in the runned container (`--volume` option), this allows to:
 
-- access the CDKTF configuration files from inside the container
+- access the ***CDKTF*** configuration files from inside the container
 - write the run artifacts inside the `cdktf.out` directory
 - persist the different caches (downloaded Terraform providers, Python virtual environments, ...) inside the `.home`
   folder that will be automatically created (and marked as git ignored)
@@ -80,9 +80,9 @@ have the correct owner.
 
 If you need to build the image, it is advised (but not mandatory) to
 use [`docker buildx`](https://docs.docker.com/engine/reference/commandline/buildx_build/) which supports
-the [BuildKit](https://docs.docker.com/build/buildkit/) build backend.
+the new [BuildKit](https://docs.docker.com/build/buildkit/) build backend.
 
-Some build arguments are available to customize the image content, the can be found in the [Dockerfile](Dockerfile).
+Some build arguments are available to customize the image content, they can be found in the [Dockerfile](Dockerfile).
 Here are the most important ones:
 
 - `BASE`: name of the base layer to use, this layer contains the chosen programing language toolchain (`python` or `go`)
@@ -103,7 +103,9 @@ docker buildx build \
 
 ### Using Poetry with the Python image
 
-Unfortunately uses Pipenv and not Poetry (TODO: links).
+No built-in template template to use Poetry
+
+Unfortunately ***CDKTF*** uses Pipenv and not Poetry (TODO: links).
 
 The package [pipenv-poetry-migrate](https://github.com/yhino/pipenv-poetry-migrate) is installed in the Docker image to
 convert for Poetry.
