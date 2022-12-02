@@ -3,7 +3,7 @@ ARG PYTHON_BASE_VERSION="3.10-alpine3.16"
 ARG GO_BASE_VERSION="1.19-alpine3.16"
 
 ARG PIPENV_VERSION="2022.11.11"
-ARG POETRY_VERSION="1.2.2"
+ARG POETRY_VERSION="1.1.13-r2"
 
 ARG NODE_VERSION="18.9.1-r0"
 ARG NPM_VERSION="8.10.0-r0"
@@ -19,9 +19,8 @@ ARG PIPENV_VERSION
 ARG POETRY_VERSION
 
 # Install Pipenv and Poetry.
-RUN pip install --no-cache-dir \
-    pipenv==${PIPENV_VERSION} \
-    poetry==${POETRY_VERSION}
+RUN pip install --no-cache-dir pipenv==${PIPENV_VERSION} && \
+    apk add --no-cache poetry=${POETRY_VERSION}
 
 ##
 
