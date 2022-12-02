@@ -109,7 +109,7 @@ projects: `python` (which uses Pipenv as the dependency manager) and `python-pip
 
 If you want to use Poetry as the dependency manager, it is possible using a community maintained
 [template](https://developer.hashicorp.com/terraform/cdktf/create-and-deploy/remote-templates#use-remote-templates).
-To allow that, Poetry is installed in the Python flavor Docker image.
+To allow that, Poetry is installed in the Python flavor Docker images.
 
 ```bash
 # Python
@@ -119,15 +119,15 @@ cdktf_bundle cdktf init --local \
   --no-enable-crash-reporting
 ```
 
-There is however one small issue regarding the installation of provider.
-Currently, ***CDKTF*** only allows to install packages using `pipenv` or `pip` commands (
+There is however one small issue regarding the installation of providers. Currently, ***CDKTF*** only allows to install
+Python packages using `pipenv` or `pip` commands (
 see [`PythonPackageManager`](https://github.com/hashicorp/terraform-cdk/blob/c2ce3cb0ff63b14bb372ca03af62aae715f264f8/packages/%40cdktf/cli-core/src/lib/dependencies/package-manager.ts#L222))
 .
 
 As there is no support for Poetry, it is not possible to install provider using `cdktf provider add` commands, for
-example : `cdktf_bundle cdktf provider add google`.
+example: `cdktf_bundle cdktf provider add google`.
 
-Instead, the provider shall be installed directly using Poetry, for
+Instead, the provider must be installed directly using Poetry, for
 example: `cdktf_bundle poetry add cdktf-cdktf-provider-google` (notice the full
 PyPI [package](https://pypi.org/project/cdktf-cdktf-provider-google/) name).
 
