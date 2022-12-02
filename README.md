@@ -66,7 +66,7 @@ Could not run version check - A system error occurred: uv_os_get_passwd returned
 
 As usual when using the [CDKTF CLI](https://developer.hashicorp.com/terraform/cdktf/cli-reference/commands), all the
 commands must be executed from the directory containing the ***CDKTF*** configuration. This directory is mounted as a
-read-write volume in the runned container (`--volume` option), this allows to:
+read-write volume in the run container (`--volume` option), this allows to:
 
 - access the ***CDKTF*** configuration files from inside the container
 - write the run artifacts inside the `cdktf.out` directory
@@ -133,9 +133,10 @@ PyPI [package](https://pypi.org/project/cdktf-cdktf-provider-google/) name).
 
 ### Using Google Cloud credentials
 
-To access the GCP API Terraform uses the Application default credentials (link).
+When accessing the GCP API, Terraform authenticates using
+the [Application default credentials](https://cloud.google.com/docs/authentication/application-default-credentials).
 
-Modify the alias declaration as follows:
+To allow using these credentials from inside the `cdktf` container, you just need to modify the alias as follows:
 
 ```bash
 alias cdktf_bundle='docker run --rm -it \
@@ -146,3 +147,6 @@ alias cdktf_bundle='docker run --rm -it \
   --env GOOGLE_APPLICATION_CREDENTIALS=/gcp/adc.json \
   ghcr.io/pcasteran/cdktf-bundle:latest-python-linux'
 ```
+
+The new volume declaration allows mounting the JSON file containing you credentials, in read-only mode, inside the
+container. Then the standard `GOOGLE_APPLICATION_CREDENTIALS` environment variable is set to point to this file.
