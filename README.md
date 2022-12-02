@@ -3,9 +3,9 @@
 A minimal bundle containing the tools required to use [CDK for Terraform](https://github.com/hashicorp/terraform-cdk)
 with your favorite programming language.
 
-The main advantage of such a bundle is that, to be able to develop and deploy ***CDKTF*** code, there is no need to install a
-programming language toolchain, Node.js or even Terraform . This makes it great for clean dev and CI environments in which
-a versioned set of tools means reproducible builds.
+The main advantage of such a bundle is that, to be able to develop and deploy ***CDKTF*** code, there is no need to
+install a programming language toolchain, Node.js or even Terraform . This makes it great for clean dev and CI
+environments in which a versioned set of tools means reproducible builds.
 
 The tools are packaged and distributed as a Docker image, available in many flavors:
 
@@ -103,24 +103,33 @@ docker buildx build \
 
 ### Using Poetry with the Python image
 
-No built-in template template to use Poetry
+When creating a new ***CDKTF*** project (`cdktf init`), you can choose between
+two [built-in templates](https://github.com/hashicorp/terraform-cdk/tree/main/packages/cdktf-cli/templates) for Python
+projects: `python` (which uses Pipenv as the dependency manager) and `python-pip`.
 
-Unfortunately ***CDKTF*** uses Pipenv and not Poetry (TODO: links).
-
-The package [pipenv-poetry-migrate](https://github.com/yhino/pipenv-poetry-migrate) is installed in the Docker image to
-convert for Poetry.
-First initialize the Poetry project:
-
-```bash
-poetry init
-```
-
-Execute the following commands everytime you want to synchronize the Poetry project with the Pipenv file:
+If you want to use Poetry as the dependency manager, it is possible using a community maintained
+[template](https://developer.hashicorp.com/terraform/cdktf/create-and-deploy/remote-templates#use-remote-templates).
+To allow that, Poetry is installed in the Python flavor Docker image.
 
 ```bash
-cdktf_bundle pipenv-poetry-migrate -f Pipfile -t pyproject.toml
-poetry update
+# Python
+cdktf_bundle cdktf init --local \
+  --template="https://github.com/johnfraney/cdktf-remote-template-python-poetry/archive/refs/tags/v1.0.0.zip" \
+  --project-name=test --project-description=test \
+  --no-enable-crash-reporting
 ```
+
+There is however one small issue regarding the installation of provider.
+Currently, ***CDKTF*** only allows to install packages using `pipenv` or `pip` commands (
+see [`PythonPackageManager`](https://github.com/hashicorp/terraform-cdk/blob/c2ce3cb0ff63b14bb372ca03af62aae715f264f8/packages/%40cdktf/cli-core/src/lib/dependencies/package-manager.ts#L222))
+.
+
+As there is no support for Poetry, it is not possible to install provider using `cdktf provider add` commands, for
+example : `cdktf_bundle cdktf provider add google`.
+
+Instead, the provider shall be installed directly using Poetry, for
+example: `cdktf_bundle poetry add cdktf-cdktf-provider-google` (notice the full
+PyPI [package](https://pypi.org/project/cdktf-cdktf-provider-google/) name).
 
 ### Using Google Cloud credentials
 
