@@ -4,8 +4,8 @@ A minimal bundle containing the tools required to use [CDK for Terraform](https:
 with your favorite programming language.
 
 The main advantage of such a bundle is that, to be able to develop and deploy ***CDKTF*** code, there is no need to
-install a programming language toolchain, Node.js or even Terraform . This makes it great for clean dev and CI
-environments in which a versioned set of tools means reproducible builds.
+install a programming language toolchain, Node.js or even Terraform. This makes it great for clean dev and CI
+environments in which a versioned set of tools translates into reproducible builds.
 
 The tools are packaged and distributed as a Docker image, available in many flavors:
 
@@ -71,7 +71,7 @@ read-write volume in the run container (`--volume` option), this allows to:
 - access the ***CDKTF*** configuration files from inside the container
 - write the run artifacts inside the `cdktf.out` directory
 - persist the different caches (downloaded Terraform providers, Python virtual environments, ...) inside the `.home`
-  folder that will be automatically created (and marked as git ignored)
+  folder that will be automatically created (and marked as gitignored)
 
 The Docker container is run as the current user (`--user` option), so all the files created during the execution will
 have the correct owner.
@@ -124,17 +124,15 @@ Python packages using `pipenv` or `pip` commands (
 see [`PythonPackageManager`](https://github.com/hashicorp/terraform-cdk/blob/c2ce3cb0ff63b14bb372ca03af62aae715f264f8/packages/%40cdktf/cli-core/src/lib/dependencies/package-manager.ts#L222))
 .
 
-As there is no support for Poetry, it is not possible to install provider using `cdktf provider add` commands, for
-example: `cdktf_bundle cdktf provider add google`.
-
-Instead, the provider must be installed directly using Poetry, for
+As there is no support for Poetry, it is not possible to install a provider using the `cdktf provider add` command, for
+example: `cdktf_bundle cdktf provider add google`. Instead, the provider must be installed directly using Poetry, for
 example: `cdktf_bundle poetry add cdktf-cdktf-provider-google` (notice the full
 PyPI [package](https://pypi.org/project/cdktf-cdktf-provider-google/) name).
 
 ### Using Google Cloud credentials
 
 When accessing the GCP API, Terraform authenticates using
-the [Application default credentials](https://cloud.google.com/docs/authentication/application-default-credentials).
+the [Application default credentials](https://cloud.google.com/docs/authentication/application-default-credentials) mechanism.
 
 To allow using these credentials from inside the `cdktf` container, you just need to modify the alias as follows:
 
@@ -148,5 +146,5 @@ alias cdktf_bundle='docker run --rm -it \
   ghcr.io/pcasteran/cdktf-bundle:latest-python-linux'
 ```
 
-The new volume declaration allows mounting the JSON file containing you credentials, in read-only mode, inside the
-container. Then the standard `GOOGLE_APPLICATION_CREDENTIALS` environment variable is set to point to this file.
+The new volume declaration mounts the JSON file containing your credentials, in read-only mode, inside the
+container. Then, the standard `GOOGLE_APPLICATION_CREDENTIALS` environment variable is set to point to this file.
