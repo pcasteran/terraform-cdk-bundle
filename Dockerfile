@@ -1,0 +1,76 @@
+ARG BASE="python"
+ARG PYTHON_BASE_VERSION="3.10-alpine3.16"
+ARG GO_BASE_VERSION="1.19-alpine3.16"
+
+ARG PIPENV_VERSION="2022.11.11"
+ARG POETRY_VERSION="1.2.2"
+
+ARG NODE_VERSION="18.9.1-r0"
+ARG NPM_VERSION="8.10.0-r0"
+
+ARG TERRAFORM_VERSION="1.3.6"
+ARG CDKTF_VERSION="0.13.3"
+
+##
+
+FROM python:${PYTHON_BASE_VERSION} AS python_base
+
+ARG PIPENV_VERSION
+ARG POETRY_VERSION
+
+# Install Pipenv and Poetry.
+RUN pip install --no-cache-dir \
+    pipenv==${PIPENV_VERSION} \
+    poetry==${POETRY_VERSION}
+
+##
+
+FROM golang:${GO_BASE_VERSION} AS go_base
+
+##
+
+# hadolint ignore=DL3006
+FROM ${BASE}_base
+
+ARG TARGETOS
+ARG TARGETARCH
+
+ARG NODE_VERSION
+ARG NPM_VERSION
+ARG TERRAFORM_VERSION
+ARG CDKTF_VERSION
+
+# Install node and npm.
+RUN apk add --no-cache \
+    nodejs-current=${NODE_VERSION} \
+    npm=${NPM_VERSION}
+
+# Install Terraform.
+WORKDIR /tmp
+RUN wget -qO terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip && \
+    unzip terraform.zip && \
+    rm terraform.zip && \
+    mv terraform /usr/local/bin/
+
+# Install CDK for Terraform.
+ENV CHECKPOINT_DISABLE=1
+ENV DISABLE_VERSION_CHECK=1
+RUN npm install --global cdktf-cli@${CDKTF_VERSION}
+
+# Create the workspace directory.
+# Configure the HOME directory to be in the workspace directory for all users.
+ENV WORKSPACE_DIR="/workspace"
+ENV HOME=${WORKSPACE_DIR}/.home
+RUN mkdir -p ${WORKSPACE_DIR} && chmod 777 ${WORKSPACE_DIR}
+WORKDIR ${WORKSPACE_DIR}
+VOLUME ["${WORKSPACE_DIR}"]
+
+# Create a new user that will be used by default if not overriden with `docker run --user ...`.
+RUN addgroup --gid 1001 --system cdktf && \
+    adduser  --uid 1001 --ingroup cdktf --shell /bin/false --disabled-password --no-create-home --system cdktf
+USER cdktf
+
+# Specify the container entrypoint and its default arguments.
+COPY docker-entrypoint.sh /
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["/bin/sh"]
