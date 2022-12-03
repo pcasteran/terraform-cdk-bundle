@@ -65,7 +65,7 @@ initialize_project() {
 
 @test "poetry" {
     # Initialize the project using the Poetry remote template.
-    initialize_project_for_template "https://github.com/pcasteran/cdktf-remote-template-python-poetry/archive/refs/heads/update_template.zip"
+    initialize_project_for_template "https://github.com/johnfraney/cdktf-remote-template-python-poetry/archive/refs/heads/main.zip"
 
     # Check the initial state.
     assert_file_not_exist "Pipfile"
