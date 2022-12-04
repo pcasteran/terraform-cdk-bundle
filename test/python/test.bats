@@ -75,7 +75,7 @@ initialize_project() {
     assert_file_contains "poetry.lock" '^name = "cdktf"$'
 
     # Install the `random` provider.
-    run cdktf_bundle poetry add cdktf-cdktf-provider-random==3.0.11
+    run cdktf_bundle poetry add cdktf-cdktf-provider-random
     assert_success
     assert_file_contains "pyproject.toml" '^cdktf-cdktf-provider-random = ".*"'
     assert_file_contains "poetry.lock" '^name = "cdktf-cdktf-provider-random"$'
