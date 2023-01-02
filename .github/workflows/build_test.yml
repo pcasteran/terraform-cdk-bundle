@@ -7,6 +7,14 @@ on:
   pull_request:
     branches:
       - "main"
+    paths-ignore:
+      - '**/*.md'
+      - '.gitignore'
+      - '.hadolint.yaml'
+      - '.pre-commit-config.yaml'
+      - '.yamllint.yaml'
+      - 'LICENSE'
+      - 'Makefile'
 
 env:
   IMAGE_NAME: "cdktf-bundle"
@@ -55,16 +63,16 @@ jobs:
 
       - name: Set up QEMU
         if: ${{ github.event_name != 'pull_request' }}
-        uses: docker/setup-qemu-action@v2.1.0
+        uses: docker/setup-qemu-action@v2
         with:
           platforms: ${{ env.IMAGE_PLATFORMS }}
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2.2.1
+        uses: docker/setup-buildx-action@v2
 
       - name: Login to GitHub Container Registry
         if: ${{ github.event_name != 'pull_request' }}
-        uses: docker/login-action@v2.1.0
+        uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -72,7 +80,7 @@ jobs:
 
       - id: docker_metadata
         name: Docker metadata
-        uses: docker/metadata-action@v4.1.1
+        uses: docker/metadata-action@v4
         with:
           images: ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
           flavor: |
@@ -89,7 +97,7 @@ jobs:
         run: echo "DOCKER_IMAGE_TAG=${{ fromJSON(steps.docker_metadata.outputs.json)['tags'][0] }}" >> "${GITHUB_ENV}"
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v3.2.0
+        uses: docker/build-push-action@v3
         with:
           context: .
           build-args: |

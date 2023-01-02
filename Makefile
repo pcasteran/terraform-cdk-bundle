@@ -1,5 +1,5 @@
 #
-# Makefile defining the `help` target.
+# Project Makefile.
 #
 
 .DEFAULT_GOAL := help

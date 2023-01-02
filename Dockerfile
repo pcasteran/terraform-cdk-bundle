@@ -3,10 +3,6 @@ ARG PYTHON_BASE_VERSION="3.11-alpine3.17"
 ARG GO_BASE_VERSION="1.19-alpine3.17"
 
 ARG PIPENV_VERSION="2022.11.30"
-ARG POETRY_VERSION="1.2.2-r0"
-
-ARG NODE_VERSION="18.12.1-r0"
-ARG NPM_VERSION="9.1.2-r0"
 
 ARG TERRAFORM_VERSION="1.3.6"
 ARG CDKTF_VERSION="0.14.1"
@@ -16,11 +12,10 @@ ARG CDKTF_VERSION="0.14.1"
 FROM python:${PYTHON_BASE_VERSION} AS python_base
 
 ARG PIPENV_VERSION
-ARG POETRY_VERSION
 
 # Install Pipenv and Poetry.
 RUN pip install --no-cache-dir pipenv==${PIPENV_VERSION} && \
-    apk add --no-cache poetry=${POETRY_VERSION}
+    apk add --no-cache poetry
 
 ##
 
@@ -34,15 +29,13 @@ FROM ${BASE}_base
 ARG TARGETOS
 ARG TARGETARCH
 
-ARG NODE_VERSION
-ARG NPM_VERSION
 ARG TERRAFORM_VERSION
 ARG CDKTF_VERSION
 
 # Install node and npm.
 RUN apk add --no-cache \
-    nodejs=${NODE_VERSION} \
-    npm=${NPM_VERSION}
+    nodejs \
+    npm
 
 # Install Terraform.
 WORKDIR /tmp
@@ -69,7 +62,7 @@ RUN addgroup --gid 1001 --system cdktf && \
     adduser  --uid 1001 --ingroup cdktf --shell /bin/false --disabled-password --no-create-home --system cdktf
 USER cdktf
 
-# Specify the container entrypoint and its default arguments.
+# Set the container entrypoint and its default arguments.
 COPY docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["/bin/sh"]
