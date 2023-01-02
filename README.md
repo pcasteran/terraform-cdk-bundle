@@ -114,7 +114,7 @@ To allow that, Poetry is installed in the Python flavor Docker images.
 ```bash
 # Python
 cdktf_bundle cdktf init --local \
-  --template="https://github.com/johnfraney/cdktf-remote-template-python-poetry/archive/refs/tags/v1.0.0.zip" \
+  --template="https://github.com/johnfraney/cdktf-remote-template-python-poetry/archive/refs/heads/main.zip" \
   --project-name=test --project-description=test \
   --no-enable-crash-reporting
 ```

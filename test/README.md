@@ -4,7 +4,7 @@ Suite of automated tests verifying that a Docker image is functional.
 
 The **[bats](https://www.npmjs.com/package/bats)** framework is used to define the tests, with the actions to execute and the expecting behavior.
 
-The tests are automatically launched  by a CI workflow following the build of a Docker image.
+The tests are automatically launched by a CI workflow following the build step.
 
 The image tag to be tested is specified using the `DOCKER_IMAGE` environment variable.
 
