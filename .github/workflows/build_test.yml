@@ -82,7 +82,9 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
 
       - name: Export the Docker metadata
-        run: echo "${{ toJSON(steps.docker_metadata.outputs.json) }}" > docker_metadata_${{ matrix.language }}_${{ matrix.platform.os }}.json
+        run: |
+          metadata_file="docker_metadata_${{ matrix.language }}_${{ matrix.platform.os }}.json"
+          echo "${{ toJSON(steps.docker_metadata.outputs.json) }}" > ${metadata_file}
 
       - name: Upload the Docker metadata
         uses: actions/upload-artifact@v3
@@ -93,7 +95,9 @@ jobs:
 
       - name: Get the first image tag
         # Take the first tag and make it available as an environment variable.
-        run: echo "DOCKER_IMAGE_TAG=$(jq -r .tags[0] docker_metadata_${{ matrix.language }}_${{ matrix.platform.os }}.json)" >> "${GITHUB_ENV}"
+        run: |
+          metadata_file="docker_metadata_${{ matrix.language }}_${{ matrix.platform.os }}.json"
+          echo "DOCKER_IMAGE_TAG=$(jq -r .tags[0] ${metadata_file})" >> "${GITHUB_ENV}"
 
       - name: Build and push the Docker image
         uses: docker/build-push-action@v3
@@ -123,7 +127,6 @@ jobs:
   test_docker_image:
     name: Test the Docker image
     needs: build_docker_image
-    uses: ./.github/workflows/test.yml
     strategy:
       fail-fast: false
       matrix:
@@ -152,7 +155,9 @@ jobs:
 
       - name: Get the first image tag
         # Take the first tag and make it available as an environment variable.
-        run: echo "DOCKER_IMAGE_TAG=$(jq -r .tags[0] docker_metadata_${{ matrix.language }}_${{ matrix.platform.os }}.json)" >> "${GITHUB_ENV}"
+        run: |
+          metadata_file="docker_metadata_${{ matrix.language }}_${{ matrix.platform.os }}.json"
+          echo "DOCKER_IMAGE_TAG=$(jq -r .tags[0] ${metadata_file})" >> "${GITHUB_ENV}"
 
       - name: Install the test framework
         working-directory: ./test
