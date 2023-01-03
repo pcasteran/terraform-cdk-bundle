@@ -18,12 +18,11 @@ on:
 
 env:
   IMAGE_NAME: "cdktf-bundle"
-  IMAGE_PLATFORMS: "linux/amd64,linux/arm64"
 
 jobs:
 
-  build_test_publish:
-    name: Build image
+  build_docker_image:
+    name: Build the Docker image
     permissions:
       packages: write
     strategy:
@@ -34,12 +33,10 @@ jobs:
           - go
         platform:
           - os: linux
-            runner: ubuntu-latest
-    # TODO: deactivated as the build is not functional (test failure) and I currently don't have
-    # the possibility to reproduce and debug locally.
-    #     - os: darwin
-    #       runner: macos-latest
-    runs-on: ${{ matrix.platform.runner }}
+            platforms: "linux/amd64,linux/arm64"
+          - os: darwin
+            platforms: "linux/amd64,linux/arm64"
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
@@ -55,23 +52,15 @@ jobs:
           DOCKERFILE_VERSION=$(sed -n 's/^.*CDKTF_VERSION=\"\(.*\)\"$/\1/p' Dockerfile)
           echo "CDKTF_VERSION=${DOCKERFILE_VERSION}" >> "${GITHUB_ENV}"
 
-      - name: Set up Docker
-        if: ${{ startsWith(matrix.platform.runner, 'macos') }}
-        run: |
-          brew install docker colima
-          colima start
-
       - name: Set up QEMU
-        if: ${{ github.event_name != 'pull_request' }}
         uses: docker/setup-qemu-action@v2
         with:
-          platforms: ${{ env.IMAGE_PLATFORMS }}
+          platforms: ${{ matrix.platform.platforms }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
       - name: Login to GitHub Container Registry
-        if: ${{ github.event_name != 'pull_request' }}
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
@@ -79,7 +68,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - id: docker_metadata
-        name: Docker metadata
+        name: Generate the Docker metadata
         uses: docker/metadata-action@v4
         with:
           images: ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
@@ -92,33 +81,37 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
 
-      - name: Get main image tag
-        # Take the first tag and make it available as an environment variable.
-        run: echo "DOCKER_IMAGE_TAG=${{ fromJSON(steps.docker_metadata.outputs.json)['tags'][0] }}" >> "${GITHUB_ENV}"
+      - name: Export the Docker metadata
+        run: |
+          metadata_file="docker_metadata_${{ matrix.language }}_${{ matrix.platform.os }}.json"
+          echo "${{ toJSON(steps.docker_metadata.outputs.json) }}" > ${metadata_file}
 
-      - name: Build and push Docker image
+      - name: Upload the Docker metadata
+        uses: actions/upload-artifact@v3
+        with:
+          name: docker_metadata_${{ matrix.language }}_${{ matrix.platform.os }}
+          path: docker_metadata_${{ matrix.language }}_${{ matrix.platform.os }}.json
+          retention-days: 7
+
+      - name: Get the first image tag
+        # Take the first tag and make it available as an environment variable.
+        run: |
+          metadata_file="docker_metadata_${{ matrix.language }}_${{ matrix.platform.os }}.json"
+          echo "DOCKER_IMAGE_TAG=$(jq -r .tags[0] ${metadata_file})" >> "${GITHUB_ENV}"
+
+      - name: Build and push the Docker image
         uses: docker/build-push-action@v3
         with:
           context: .
           build-args: |
             BASE=${{ matrix.language }}
             CDKTF_VERSION=${{ env.CDKTF_VERSION }}
-
-          # In case of invocation in the context of a PR, build only for the `linux/amd64` platform.
-          # Otherwise, build for all the required platforms.
-          platforms: ${{ github.event_name == 'pull_request' && 'linux/amd64' || env.IMAGE_PLATFORMS }}
-
+          platforms: ${{ matrix.platform.platforms }}
           tags: ${{ steps.docker_metadata.outputs.tags }}
           labels: ${{ steps.docker_metadata.outputs.labels }}
-
-          # The local registry does not support multi-platform images (see https://github.com/docker/buildx/issues/59).
-          # In case of invocation in the context of a PR, load the image to the local registry as it is single platform.
-          load: ${{ github.event_name == 'pull_request' }}
-          # Otherwise, push the image to the remote registry.
-          push: ${{ github.event_name != 'pull_request' }}
+          push: true
 
       - name: Run Trivy vulnerability scanner
-        if: ${{ matrix.platform.os == 'linux' }}  # Container scanning only works on linux.
         uses: aquasecurity/trivy-action@0.8.0
         with:
           image-ref: ${{ env.DOCKER_IMAGE_TAG }}
@@ -129,17 +122,57 @@ jobs:
           security-checks: "vuln"
           severity: "CRITICAL,HIGH"
 
-      - name: Install test framework
+  #####
+
+  test_docker_image:
+    name: Test the Docker image
+    needs: build_docker_image
+    strategy:
+      fail-fast: false
+      matrix:
+        language:
+          - python
+          - go
+        platform:
+          - os: linux
+            runner: ubuntu-latest
+          - os: darwin
+            runner: macos-latest
+    runs-on: ${{ matrix.platform.runner }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Docker
+        if: ${{ matrix.platform.os == 'darwin' }}
+        run: |
+          brew install docker colima
+          colima start
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: docker_metadata_${{ matrix.language }}_${{ matrix.platform.os }}
+          path: .
+
+      - name: Get the first image tag
+        # Take the first tag and make it available as an environment variable.
+        run: |
+          metadata_file="docker_metadata_${{ matrix.language }}_${{ matrix.platform.os }}.json"
+          echo "DOCKER_IMAGE_TAG=$(jq -r .tags[0] ${metadata_file})" >> "${GITHUB_ENV}"
+
+      - name: Install the test framework
         working-directory: ./test
         run: npm install
+
       - uses: actions/setup-python@v4
+        if: ${{ matrix.language == 'python' }}
         with:
           python-version: "3.11"
+
       - name: Install Poetry
         if: ${{ matrix.language == 'python' }}
         run: curl -sSL https://install.python-poetry.org | python3 -
 
-      - name: Test image
+      - name: Run the tests
         working-directory: ./test/${{ matrix.language }}
         run: npx bats .
         env:

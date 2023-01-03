@@ -14,7 +14,7 @@ help: ## Show this help
 	@echo
 
 .PHONY: lint
-lint: ## Lint the projet sources
+lint: ## Lint the project sources
 	docker run --rm \
 		--name super-linter \
 		--env RUN_LOCAL=true \
