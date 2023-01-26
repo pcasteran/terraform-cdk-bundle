@@ -51,5 +51,6 @@ initialize_project_for_template() {
       --local \
       --project-name="test-${template}" \
       --project-description="test-${template}" \
-      --no-enable-crash-reporting
+      --enable-crash-reporting=false \
+      --providers="null"
 }
