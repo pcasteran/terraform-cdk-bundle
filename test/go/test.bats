@@ -16,6 +16,7 @@ teardown() {
 
 initialize_project() {
     initialize_project_for_template "go"
+    cdktf_bundle go mod download
 }
 
 @test "cdktf is installed" {
