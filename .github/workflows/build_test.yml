@@ -1,6 +1,7 @@
 name: Build and test
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+*"
@@ -8,13 +9,13 @@ on:
     branches:
       - "main"
     paths-ignore:
-      - '**/*.md'
-      - '.gitignore'
-      - '.hadolint.yaml'
-      - '.pre-commit-config.yaml'
-      - '.yamllint.yaml'
-      - 'LICENSE'
-      - 'Makefile'
+      - "**/*.md"
+      - ".gitignore"
+      - ".hadolint.yaml"
+      - ".pre-commit-config.yaml"
+      - ".yamllint.yaml"
+      - "LICENSE"
+      - "Makefile"
 
 env:
   IMAGE_NAME: "cdktf-bundle"
@@ -117,6 +118,16 @@ jobs:
           tags: ${{ steps.docker_metadata.outputs.tags }}
           labels: ${{ steps.docker_metadata.outputs.labels }}
           push: true
+
+      - name: Analyze the image efficiency
+        run: |
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            wagoodman/dive:latest \
+            --ci \
+            --lowestEfficiency=0.95 \
+            --highestUserWastedPercent=0.05 \
+            ${{ env.DOCKER_IMAGE_TAG }}
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.8.0
