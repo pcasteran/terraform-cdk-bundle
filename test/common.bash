@@ -32,6 +32,7 @@ cdktf_bundle() {
         --name cdktf \
         --user "$(id -u)":"$(id -g)" \
         --volume "$(pwd)":/workspace \
+        --env CI=1 \
         "${DOCKER_IMAGE}" \
         "$@"
 }
@@ -51,6 +52,5 @@ initialize_project_for_template() {
       --local \
       --project-name="test-${template}" \
       --project-description="test-${template}" \
-      --enable-crash-reporting=false \
-      --providers="null"
+      --enable-crash-reporting=false
 }
