@@ -108,7 +108,7 @@ jobs:
           echo "DOCKER_IMAGE_TAG=$(jq -r .tags[0] ${metadata_file})" >> "${GITHUB_ENV}"
 
       - name: Build and push the Docker image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           build-args: |
