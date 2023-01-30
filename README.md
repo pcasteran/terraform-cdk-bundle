@@ -39,7 +39,7 @@ Then, you just have to prepend `cdktf_bundle` to all the commands that you want 
 # Python
 cdktf_bundle cdktf init --template=python --local \
   --project-name=test --project-description=test \
-  --no-enable-crash-reporting
+  --enable-crash-reporting=false
 
 cdktf_bundle cdktf provider add google
 
@@ -49,7 +49,7 @@ cdktf_bundle cdktf deploy
 # Go
 cdktf_bundle cdktf init --template=go --local \
   --project-name=test --project-description=test \
-  --no-enable-crash-reporting
+  --enable-crash-reporting=false
 
 cdktf_bundle cdktf provider add google
 cdktf_bundle go mod download

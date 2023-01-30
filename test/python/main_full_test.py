@@ -22,7 +22,7 @@ class MyStack(TerraformStack):
         file_content = StringResource(scope=self, id="content", length=20)
 
         file_path = os.path.join(os.getcwd(), "foo.txt")
-        file = File(scope=self, id_="file", filename=file_path, content=file_content.result)
+        file = File(scope=self, id="file", filename=file_path, content=file_content.result)
 
         # Declare the outputs.
         TerraformOutput(scope=self, id="file_name", description="The file name", value=file.filename)
