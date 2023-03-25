@@ -134,8 +134,6 @@ jobs:
           vuln-type: "os,library"
           security-checks: "vuln"
           severity: "CRITICAL,HIGH"
-          # Ignore the CDKTF GO template folder.
-          skip-dirs: "/usr/local/lib/node_modules/cdktf-cli/node_modules/@cdktf/cli-core/templates/go"
 
   #####
 
