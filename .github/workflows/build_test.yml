@@ -135,7 +135,8 @@ jobs:
           scanners: "vuln"
           severity: "CRITICAL,HIGH"
           # Ignore the CDKTF GO templates.
-          skip-files: "/usr/local/lib/node_modules/cdktf-cli/templates/go/go.mod,/usr/local/lib/node_modules/cdktf-cli/node_modules/@cdktf/cli-core/templates/go/go.mod"
+          skip-files: "/usr/local/lib/node_modules/cdktf-cli/templates/go/go.mod,
+                       /usr/local/lib/node_modules/cdktf-cli/node_modules/@cdktf/cli-core/templates/go/go.mod"
 
   #####
 
