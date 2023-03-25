@@ -132,7 +132,7 @@ jobs:
           exit-code: "0"  # TODO: set to "1" when vulnerability is fixed on the terraform binary
           ignore-unfixed: true
           vuln-type: "os,library"
-          security-checks: "vuln"
+          scanners: "vuln"
           severity: "CRITICAL,HIGH"
 
   #####
