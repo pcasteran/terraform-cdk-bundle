@@ -125,15 +125,18 @@ jobs:
             ${{ env.DOCKER_IMAGE_TAG }}
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.9.1
+        uses: aquasecurity/trivy-action@0.9.2
         with:
           image-ref: ${{ env.DOCKER_IMAGE_TAG }}
           format: "table"
           exit-code: "0"  # TODO: set to "1" when vulnerability is fixed on the terraform binary
           ignore-unfixed: true
           vuln-type: "os,library"
-          security-checks: "vuln"
+          scanners: "vuln"
           severity: "CRITICAL,HIGH"
+          # Ignore the CDKTF GO templates.
+          skip-files: "/usr/local/lib/node_modules/cdktf-cli/templates/go/go.mod,
+                       /usr/local/lib/node_modules/cdktf-cli/node_modules/@cdktf/cli-core/templates/go/go.mod"
 
   #####
 
