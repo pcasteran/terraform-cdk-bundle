@@ -20,7 +20,7 @@ lint: ## Lint the project sources
 		--env RUN_LOCAL=true \
 		--env-file ".github/super-linter.env" \
 		--volume "$(shell pwd)":/tmp/lint:ro \
-		github/super-linter:slim-v4
+		github/super-linter:slim-v5
 
 .PHONY: lint_shell
 lint_shell: ## Open a shell in a linter container
@@ -31,4 +31,4 @@ lint_shell: ## Open a shell in a linter container
 		--volume "$(shell pwd)":/tmp/lint \
 		--entrypoint /bin/bash \
 		--workdir /tmp/lint \
-		github/super-linter:slim-v4
+		github/super-linter:slim-v5
