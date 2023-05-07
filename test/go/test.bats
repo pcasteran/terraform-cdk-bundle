@@ -35,7 +35,7 @@ initialize_project() {
     initialize_project
 
     # Install the `random` provider.
-    run cdktf_bundle cdktf provider add random
+    run cdktf_bundle cdktf provider add random@~>7
     assert_success
     assert_output --partial "Found pre-built provider."
     assert_output --partial "Package installed."
@@ -45,7 +45,7 @@ initialize_project() {
     initialize_project
 
     # Add the providers.
-    cdktf_bundle cdktf provider add random local
+    cdktf_bundle cdktf provider add random@~>7 local@~>6
 
     run cdktf_bundle go mod download
     assert_success
