@@ -35,7 +35,7 @@ initialize_project() {
     initialize_project
 
     # Install the `random` provider.
-    run cdktf_bundle cdktf provider add random@~>7
+    run cdktf_bundle cdktf provider add "random@~>7"
     assert_success
     assert_output --partial "Found pre-built provider."
     assert_output --partial "Package installed."
@@ -45,7 +45,7 @@ initialize_project() {
     initialize_project
 
     # Add the providers.
-    cdktf_bundle cdktf provider add random@~>7 local@~>6
+    cdktf_bundle cdktf provider add "random@~>7" "local@~>6"
 
     # Replace the `main.py` file in the initialized project.
     cp ../main_full_test.py ./main.py
