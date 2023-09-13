@@ -1,6 +1,8 @@
 package main
 
 import (
+	"github.com/aws/constructs-go/constructs/v10"
+	"github.com/aws/jsii-runtime-go"
 	localFile "github.com/cdktf/cdktf-provider-local-go/local/v8/file"
 	localProvider "github.com/cdktf/cdktf-provider-local-go/local/v8/provider"
 	randomProvider "github.com/cdktf/cdktf-provider-random-go/random/v9/provider"
